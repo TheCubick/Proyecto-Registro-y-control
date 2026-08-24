@@ -7,14 +7,18 @@ use Illuminate\Http\Request;
 class postcontroller extends Controller
 {
     public function index(){
-        return "Aquí se hara los post de la pagina";
+        return view('post.index');
     }
 
     public function create(){
-        return "Aqui se hara un formulario";
+        return view('post.create');
     }
 
     public function show(string $post){
-        return "Pagina con la varibale '$post'";
+        //para que laravel identifique cual es la variable se tiene que hacer un array
+        return view('post.show', [
+            'post' => $post
+            //se le otorga un nombre y en esta misma se declara la variable o constante que reflejará
+        ]);
     }
 }
