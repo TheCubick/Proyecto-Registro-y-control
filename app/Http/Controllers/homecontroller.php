@@ -7,6 +7,6 @@ use Illuminate\Http\Request;
 class homecontroller extends Controller
 {
     public function index(){
-        return "Bienvenido al curso de laravel";
+        return view('home');
     }
 }
