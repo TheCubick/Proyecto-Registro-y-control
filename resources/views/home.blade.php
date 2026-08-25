@@ -11,7 +11,7 @@
     {{-- al igual que flowbite para hacer más "estetico" --}}
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
 
-    <title>Bienvedio-practica</title>
+    <title>Proyecto | Laravel</title>
 </head>
 
 <body>
@@ -22,14 +22,14 @@
         <x-alert type="success" class="mb-4">
             {{-- codigo para llamar a la variable y agregar titulo --}}
             <x-slot name="title">
-                Nombre
+                Alerta sobre implementación <br>
             </x-slot>
 
             {{-- aqui se puede escribir el contendio --}}
-            Aquí habra algunas cosas
+            Este texto es el cuerpo de la alerta
         </x-alert>
 
-        <p>Hola</p>
+        <p>Este texto no tiene la propiedad del archivo alert</p>
     </div>
 </body>
 </html>
