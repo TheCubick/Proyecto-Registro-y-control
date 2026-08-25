@@ -4,7 +4,7 @@ use App\Http\Controllers\homecontroller;
 use App\Http\Controllers\postcontroller;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [homecontroller::class, 'index']);
+Route::get('/', homecontroller::class);
 
 Route::get('/post', [postcontroller::class, 'index']);
 

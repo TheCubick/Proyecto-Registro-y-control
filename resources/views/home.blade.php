@@ -4,10 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    {{-- Llamo/utilizo la herramienta de tailwind --}}
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    {{-- al igual que flowbite para hacer más "estetico" --}}
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+
     <title>Bienvedio-practica</title>
 </head>
 
 <body>
-    <h1>Hola, estos son practicas para mi servicio social</h1>
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        {{-- <h1>Hola, estos son practicas para mi servicio social</h1> --}}
+
+        {{-- puedo hacer que busque el tipo de alerta que prefiero, en el file de alaert --}}
+        <x-alert type="success" class="mb-4">
+            {{-- codigo para llamar a la variable y agregar titulo --}}
+            <x-slot name="title">
+                Nombre
+            </x-slot>
+
+            {{-- aqui se puede escribir el contendio --}}
+            Aquí habra algunas cosas
+        </x-alert>
+
+        <p>Hola</p>
+    </div>
 </body>
 </html>
