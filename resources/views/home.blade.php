@@ -1,21 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{{-- sirve para llamar a mi plantilla que se encuentra en la carpeta de layout --}}
+@extends('layout.plantilla')
 
-    {{-- Llamo/utilizo la herramienta de tailwind --}}
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{{-- agrego el titulo y lo asigno en una misma linea --}}
+@section('title', 'Registro | Control de acceso')
 
-    {{-- al igual que flowbite para hacer más "estetico" --}}
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+@push('css')
+    <style>
+        body{
+            background-color: #FFFCFC;
+        }
+    </style>
+@endpush
 
-    <title>Proyecto | Laravel</title>
-</head>
-
-<body>
-    <div class="max-w-4xl mx-auto px-4 py-8">
+{{-- se utiliza para asignar que este sea el contenido --}}
+@section('content')
+        <div class="max-w-4xl mx-auto px-4 py-8">
         {{-- <h1>Hola, estos son practicas para mi servicio social</h1> --}}
 
         {{-- puedo hacer que busque el tipo de alerta que prefiero, en el file de alaert --}}
@@ -31,5 +30,5 @@
 
         <p>Este texto no tiene la propiedad del archivo alert</p>
     </div>
-</body>
-</html>
+
+@endsection

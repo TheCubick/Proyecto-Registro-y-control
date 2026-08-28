@@ -1,6 +1,6 @@
 # Proyecto de Laravel
 
-En este proyecto pondré en marcha las sintaxis aprendidas implemanetando arquitectura MVC, migraciones de SQL
+En este proyecto pondré en marcha las sintaxis aprendidas implementando arquitectura MVC, migraciones de SQL
 
 ## Algunas tecnologías que utilizaré son:
 * Laravel
