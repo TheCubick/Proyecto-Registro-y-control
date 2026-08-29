@@ -18,7 +18,7 @@
 
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col justify-between">
                 {{-- fondo,  linea,  resaltado de linea, color de sombra --}}
     <header class="bg-[#941F09] border-b border-gray-200 shadow-orange-700">
                     {{-- limita_ancho, margen, espacio, cel, tblt, pc, flexbox, centrado, separación de logo --}}
@@ -34,11 +34,14 @@
                 </ul>
         </nav>
     </header>
-    {{-- servirá para que el contenido sea variable a medida que lo nombres en nuestro archivo (contenido) --}}
-    @yield('content')
+    {{-- El main con flex-grow empuja el footer hasta abajo --}}
+    <main class="grow max-w-5xl w-full mx-auto px-4 py-8">
+        {{-- servirá para que el contenido sea variable a medida que lo nombres en nuestro archivo (contenido) --}}
+        @yield('content')
+    </main>
 
-    <footer class="bg-[##F4F0F0] border-t border-zinc-500 py-4">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+    <footer class="bg-white border-t border-gray-200 py-4">
+        <div class="text-center text-xs text-gray-500">
             © 2026 TheCubick. Todos los derechos reservados.
         </div>
     </footer>

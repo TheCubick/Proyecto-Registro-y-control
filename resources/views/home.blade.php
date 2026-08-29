@@ -5,11 +5,11 @@
 @section('title', 'Registro | Control de acceso')
 
 @push('css')
-    <style>
+    {{-- <style>
         body{
             background-color: #E3DADA;
         }
-    </style>
+    </style> --}}
 @endpush
 
 {{-- se utiliza para asignar que este sea el contenido --}}
