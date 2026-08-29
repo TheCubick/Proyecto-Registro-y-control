@@ -37,10 +37,10 @@
     {{-- servirá para que el contenido sea variable a medida que lo nombres en nuestro archivo (contenido) --}}
     @yield('content')
 
-    <footer class="bg-white border-t border-gray-200 py-4">
+    <footer class="bg-[##F4F0F0] border-t border-zinc-500 py-4">
         <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
             © 2026 TheCubick. Todos los derechos reservados.
         </div>
-    </footer>  
+    </footer>
 </body>
 </html>

@@ -7,7 +7,7 @@
 @push('css')
     <style>
         body{
-            background-color: #FFFCFC;
+            background-color: #E3DADA;
         }
     </style>
 @endpush
@@ -15,10 +15,9 @@
 {{-- se utiliza para asignar que este sea el contenido --}}
 @section('content')
         <div class="max-w-4xl mx-auto px-4 py-8">
-        {{-- <h1>Hola, estos son practicas para mi servicio social</h1> --}}
 
         {{-- puedo hacer que busque el tipo de alerta que prefiero, en el file de alaert --}}
-        <x-alert type="success" class="mb-4">
+        <x-alert type="info" class="mb-4">
             {{-- codigo para llamar a la variable y agregar titulo --}}
             <x-slot name="title">
                 Alerta sobre implementación <br>
