@@ -18,9 +18,9 @@
 
 </head>
 
-<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col justify-between">
+<body class="bg-white text-gray-800 min-h-screen flex flex-col justify-between">
                 {{-- fondo,  linea,  resaltado de linea, color de sombra --}}
-    <header class="bg-[#941F09] border-b border-gray-200 shadow-orange-700">
+    <header class="bg-[#4F1B10] border-b border-gray-200 shadow-orange-700">
                     {{-- limita_ancho, margen, espacio, cel, tblt, pc, flexbox, centrado, separación de logo --}}
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 {{-- negritas,  tamaño,   color letras --}}
@@ -28,9 +28,9 @@
                 Registro y control de acceso
             </div>
                 <ul class="flex space-x-6 text-sm font-medium text-neutral-100">
-                    <li class="hover:text-black cursor-pointer transition">Inicio</li>
-                    <li class="hover:text-black cursor-pointer transition">Herramientas</li>
-                    <li class="hover:text-black cursor-pointer transition">Más</li>
+                    <li class="hover:text-[#DB6851] cursor-pointer transition">Inicio</li>
+                    <li class="hover:text-[#DB6851] cursor-pointer transition">Herramientas</li>
+                    <li class="hover:text-[#DB6851] cursor-pointer transition">Más</li>
                 </ul>
         </nav>
     </header>
