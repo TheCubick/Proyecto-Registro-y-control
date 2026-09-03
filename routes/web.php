@@ -51,4 +51,7 @@ route::get('basedatos', function(){
     return 'Dato eliminado';
 */
 
+    $departments = departments::find(5);
+    return $departments -> created_at -> format('d/m/Y');
+
 });

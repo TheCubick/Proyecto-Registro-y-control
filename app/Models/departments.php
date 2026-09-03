@@ -29,4 +29,13 @@ class departments extends Model
             }
         );
     }
+
+/*
+    // Lo que hace aquí es darle un 'atributo' para que laravel vea que es un algo
+    protected function casts():array{
+        return[
+            'published_at' => 'datetime',
+        ];
+    } */
+
 }
