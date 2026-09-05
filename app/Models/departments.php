@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+// importación del factory necesario
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class departments extends Model
 {
+    // utilizamos factory
+    use HasFactory;
+
     // tabla donde me voy a conectar
     protected $table = 'departments';
     // puedo eliminar esa linea siempre y cuando tenga el nombre de la tabla en ingles
