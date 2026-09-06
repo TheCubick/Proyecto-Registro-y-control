@@ -4,19 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class postcontroller extends Controller
+class departmentscontroller extends Controller
 {
     public function index(){
-        return view('post.index');
+        return view('departments.index');
     }
 
     public function create(){
-        return view('post.create');
+        return view('departments.create');
     }
 
     public function show(string $post){
         //para que laravel identifique cual es la variable se tiene que hacer un array
-        return view('post.show', [
+        return view('departments.show', [
             'post' => $post
             //se le otorga un nombre y en esta misma se declara la variable o constante que reflejará
         ]);

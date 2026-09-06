@@ -13,27 +13,35 @@
     {{-- al igual que flowbite para hacer más "estetico" --}}
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
 
+    {{-- agrego icono a la parte de arriba del navegador dependiendo si es visits, visitors, user o departments --}}
+    <link rel="icon" type='img/png' href="{{ asset(View::yieldContent('favicon', 'global.png')) }}">
+
     {{-- sirve para definir que puedo abrir un css en el archivo que deseo claro cuando utilice esta plantilla --}}
     @stack('css')
 
 </head>
 
-<body class="bg-white text-gray-800 min-h-screen flex flex-col justify-between">
+<body class="bg-[#F2F4F7] text-gray-800 min-h-screen flex flex-col justify-between">
+
                 {{-- fondo,  linea,  resaltado de linea, color de sombra --}}
-    <header class="bg-[#4F1B10] border-b border-gray-200 shadow-orange-700">
+    <header class="bg-[#FAFCFA] border-b border-gray-200 shadow-orange-700">
+
                     {{-- limita_ancho, margen, espacio, cel, tblt, pc, flexbox, centrado, separación de logo --}}
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
                 {{-- negritas,  tamaño,   color letras --}}
-            <div class="font-bold text-lg text-neutral-50">
+            <div class="font-bold text-lg text-black">
                 Registro y control de acceso
             </div>
-                <ul class="flex space-x-6 text-sm font-medium text-neutral-100">
-                    <li class="hover:text-[#DB6851] cursor-pointer transition">Inicio</li>
-                    <li class="hover:text-[#DB6851] cursor-pointer transition">Herramientas</li>
-                    <li class="hover:text-[#DB6851] cursor-pointer transition">Más</li>
+
+                <ul class="flex space-x-6 text-sm font-medium text-black">
+                    <li class="hover:text-amber-700 cursor-pointer transition">Inicio</li>
+                    <li class="hover:text-amber-700 cursor-pointer transition">Herramientas</li>
+                    <li class="hover:text-amber-700 cursor-pointer transition">Más</li>
                 </ul>
         </nav>
     </header>
+
     {{-- El main con flex-grow empuja el footer hasta abajo --}}
     <main class="grow max-w-5xl w-full mx-auto px-4 py-8">
         {{-- servirá para que el contenido sea variable a medida que lo nombres en nuestro archivo (contenido) --}}
