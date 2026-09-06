@@ -49,5 +49,8 @@ class departmentseeder extends Seeder
         $deparments -> building_floor = 'Edificio B | Arquitectura';
 
         $deparments -> save();
+
+        // crea los datos ficticios y los inserta en la base de datos
+        departments::factory()->count(4)->create();
     }
 }
