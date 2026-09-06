@@ -1,57 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>@yield('title')</title>
+        <title>@yield('title')</title>
 
-    {{-- Llamo/utilizo la herramienta de tailwind --}}
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-    {{-- al igual que flowbite para hacer más "estetico" --}}
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
 
-    {{-- agrego icono a la parte de arriba del navegador dependiendo si es visits, visitors, user o departments --}}
-    <link rel="icon" type='img/png' href="{{ asset(View::yieldContent('favicon', 'global.png')) }}">
+        <link rel="icon" type='img/png' href="{{ asset(View::yieldContent('favicon', 'global.png')) }}">
 
-    {{-- sirve para definir que puedo abrir un css en el archivo que deseo claro cuando utilice esta plantilla --}}
-    @stack('css')
+    </head>
 
-</head>
+    <body class="bg-[#F2F4F7] text-gray-800 min-h-screen flex flex-col justify-between">
 
-<body class="bg-[#F2F4F7] text-gray-800 min-h-screen flex flex-col justify-between">
+                    {{-- fondo,  linea,  resaltado de linea, color de sombra --}}
+        <header class="bg-[#FBFBFA] border-b border-gray-200 shadow-orange-700">
 
-                {{-- fondo,  linea,  resaltado de linea, color de sombra --}}
-    <header class="bg-[#FAFCFA] border-b border-gray-200 shadow-orange-700">
+            <nav class="w-full px-6 sm:px-10 h-16 flex items-center justify-between">
 
-                    {{-- limita_ancho, margen, espacio, cel, tblt, pc, flexbox, centrado, separación de logo --}}
-        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                {{-- LOGO --}}
+                <div class="flex shrink-0 items-center">
+                    <a href="/" class="flex items-center">
+                        <img src="{{ asset('logo.png') }}" alt="logo" class="h-10 w-auto object-contain">
+                    </a>
+                </div>
 
-                {{-- negritas,  tamaño,   color letras --}}
-            <div class="font-bold text-lg text-black">
-                Registro y control de acceso
+                {{-- HERRAMIENTAS --}}
+                <div class="hidden flex-1 items-center justify-center space-x-1 md:flex">
+                    {{-- departamentos --}}
+                    <a href="{{ route('departments.index')}}" class="{{ request()->is('departamentos*') ? 'bg-[#2757C8] text-white font-semibold shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} px-4 py-2 rounded-lg transition">
+                        Departamentos
+                    </a>
+                    {{-- visitantes --}}
+                    <a href="{{ route('visitors.index') }}" class="{{ request()->is('visitantes*') ? 'bg-[#2757C8] text-white font-semibold shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} px-4 py-2 rounded-lg transition">
+                        Visitantes
+                    </a>
+                    {{-- visitantes --}}
+                    <a href="{{ route('visits.index') }}" class="{{ request()->is('visitas*') ? 'bg-[#2757C8] text-white font-semibold shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} px-4 py-2 rounded-lg transition">
+                        Visitas
+                    </a>
+                </div>
+
+                <div class="shrink-0">
+                    <a href="#" class="inline-flex items-center rounded-lg bg-[#2757C8] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        Iniciar sesión
+                    </a>
+                    <a href="#" class="ml-2 inline-flex items-center rounded-lg border border-[#2757C8] bg-white px-4 py-2 font-semibold text-[#2757C8] shadow-sm transition hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        Registrar
+                    </a>
+                </div>
+
+            </nav>
+        </header>
+
+
+        {{-- El main con flex-grow empuja el footer hasta abajo --}}
+        <main class="grow max-w-5xl w-full mx-auto px-4 py-8">
+            @yield('content')
+        </main>
+
+        <footer class="bg-white border-t border-gray-200 py-4">
+            <div class="text-center text-xs text-gray-500">
+                © 2026 TheCubick. Todos los derechos reservados.
             </div>
+        </footer>
 
-                <ul class="flex space-x-6 text-sm font-medium text-black">
-                    <li class="hover:text-amber-700 cursor-pointer transition">Inicio</li>
-                    <li class="hover:text-amber-700 cursor-pointer transition">Herramientas</li>
-                    <li class="hover:text-amber-700 cursor-pointer transition">Más</li>
-                </ul>
-        </nav>
-    </header>
+    </body>
 
-    {{-- El main con flex-grow empuja el footer hasta abajo --}}
-    <main class="grow max-w-5xl w-full mx-auto px-4 py-8">
-        {{-- servirá para que el contenido sea variable a medida que lo nombres en nuestro archivo (contenido) --}}
-        @yield('content')
-    </main>
 
-    <footer class="bg-white border-t border-gray-200 py-4">
-        <div class="text-center text-xs text-gray-500">
-            © 2026 TheCubick. Todos los derechos reservados.
-        </div>
-    </footer>
-</body>
 </html>

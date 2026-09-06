@@ -4,6 +4,8 @@ use App\Http\Controllers\homecontroller;
 use App\Http\Controllers\departmentscontroller;
 use App\Models\departments;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\VisitController;
 
 Route::get('/', homecontroller::class);
 
@@ -46,3 +48,7 @@ route::get('basedatos', function(){
         // $departments = departments::find(5);
         // return $departments -> created_at -> format('d/m/Y');
 // });
+
+Route::get('/visitantes', [VisitorController::class, 'index']) -> name ('visitors.index');
+
+Route::get('/visitas', [VisitController::class, 'index']) -> name ('visits.index');

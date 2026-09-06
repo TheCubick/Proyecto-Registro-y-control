@@ -1,7 +1,7 @@
 @extends('layout.plantilla')
 
 @section('title', 'Control | Lista Departamentos')
-@section('favicon', 'departamento.png')
+@section('favicon', 'departamentos.png')
 
 @section('content')
     <div class="max-w-4xl mx-auto px-4 py-8">
