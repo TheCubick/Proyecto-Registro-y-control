@@ -4,9 +4,9 @@
 @section('favicon', 'visitas.png')
 
 @section('content')
-    <div>
-        <x-alert type='info' class="max-w-4xl mx-auto px-4 py-8">
-        <x-slot name='title' class="mb-4">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <x-alert type='info' class="mb4">
+        <x-slot name='title'>
             Construyendo
         </x-slot>
         el espacio de visitas
