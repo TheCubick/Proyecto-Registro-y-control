@@ -4,6 +4,7 @@ namespace App\Models;
 
 // importación del factory necesario
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -15,6 +16,11 @@ class departments extends Model
     // tabla donde me voy a conectar
     protected $table = 'departments';
     // puedo eliminar esa linea siempre y cuando tenga el nombre de la tabla en ingles
+
+    public function visits(): HasMany
+    {
+        return $this->hasMany(visits::class);
+    }
 
     // se crea una funcion para darle un atributo, se declará arriba
     protected function name():Attribute{

@@ -2,14 +2,8 @@
 
 namespace Database\Factories;
 
-// busca la tabla a la cual insertará datos
 use App\Models\departments;
-// libreria para factory
 use Illuminate\Database\Eloquent\Factories\Factory;
-// herramienta para crear textos
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Attributes\UseFactory;
-
 
 /**
  * @extends Factory<departments>
@@ -25,12 +19,18 @@ class departmentsFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->randomElement([
+                'Desarrollo',
+                'Soporte Técnico',
+                'Sistemas',
+                'Recursos Humanos',
+                'Administración',
+                'Arquitectura',
+            ]),
             'building_floor' => fake()->randomElement([
-                'Edificio A | Recursos Humanos',
-                'Edificio B | Desarrollo de Software',
-                'Edificio B | Arquitectura',
-                'Edificio C | Dirección General'
+                'Edificio A',
+                'Edificio B',
+                'Edificio C',
             ]),
         ];
     }

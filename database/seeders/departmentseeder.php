@@ -15,42 +15,42 @@ class departmentseeder extends Seeder
     {
         // variable donde agregaré los datos a mi base de datos
         $deparments = new departments();
-        $deparments -> name ='Pablo Ramírez';
-        $deparments -> building_floor = 'Edificio A | Desarrollo';
+        $deparments->name = 'Desarrollo';
+        $deparments->building_floor = 'Edificio A';
 
         $deparments -> save();
 
         $deparments = new departments();
-        $deparments -> name ='Ángel García';
-        $deparments -> building_floor = 'Edificio A | Desarrollo';
+        $deparments->name = 'Soporte Técnico';
+        $deparments->building_floor = 'Edificio A';
 
         $deparments -> save();
 
         $deparments = new departments();
-        $deparments -> name ='Luna Martinez';
-        $deparments -> building_floor = 'Edificio A | Desarrollo';
+        $deparments->name = 'Sistemas';
+        $deparments->building_floor = 'Edificio A';
 
         $deparments -> save();
 
         $deparments = new departments();
-        $deparments -> name ='Ezequiel Perez';
-        $deparments -> building_floor = 'Edificio B | RRHH';
+        $deparments->name = 'Recursos Humanos';
+        $deparments->building_floor = 'Edificio B';
 
         $deparments -> save();
 
         $deparments = new departments();
-        $deparments -> name ='Miguel Sanchez';
-        $deparments -> building_floor = 'Edificio B | RRHH';
+        $deparments->name = 'Administración';
+        $deparments->building_floor = 'Edificio B';
 
         $deparments -> save();
 
         $deparments = new departments();
-        $deparments -> name ='Ivanna Herrera';
-        $deparments -> building_floor = 'Edificio B | Arquitectura';
+        $deparments->name = 'Arquitectura';
+        $deparments->building_floor = 'Edificio B';
 
         $deparments -> save();
 
-        // crea los datos ficticios y los inserta en la base de datos
-        departments::factory()->count(4)->create();
+        // // crea los datos ficticios y los inserta en la base de datos
+        // departments::factory()->count(4)->create();
     }
 }

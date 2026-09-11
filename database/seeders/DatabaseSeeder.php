@@ -16,8 +16,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::firstOrCreate(
+            ['email' => 'guardia@registro.test'],
+            [
+                'name' => 'Guardia Principal',
+                'password' => bcrypt('password'),
+                'role' => 'guardia',
+            ]
+        );
+
         $this -> call([
             departmentseeder::class,
+            visitorSeeder::class,
+            visitSeeder::class,
         ]);
     }
 }
