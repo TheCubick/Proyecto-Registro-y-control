@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\departments;
 use Illuminate\Http\Request;
 
 class departmentscontroller extends Controller
 {
     public function index(){
-        return view('departments.index');
+        $departments = departments::all();
+        return view('departments.index', compact('departments'));
     }
 
     public function create(){
