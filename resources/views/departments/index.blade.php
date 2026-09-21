@@ -1,6 +1,6 @@
 @extends('layout.plantilla')
 
-@section('title', 'Control | Lista Departamentos')
+@section('title', 'Departamentos')
 @section('favicon', 'departamentos.png')
 
 @section('content')
@@ -30,6 +30,7 @@
                 <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#2757C8]">Activos</span>
             </div>
 
+                {{-- Tabla --}}
             <div class="overflow-x-auto">
                 <table class="w-full min-w-105 text-left text-sm">
                     <thead class="bg-slate-50 text-xs uppercase tracking-[0.08em] text-slate-500">

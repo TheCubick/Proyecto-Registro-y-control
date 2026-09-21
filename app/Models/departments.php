@@ -17,6 +17,8 @@ class departments extends Model
     protected $table = 'departments';
     // puedo eliminar esa linea siempre y cuando tenga el nombre de la tabla en ingles
 
+    protected $fillable = ['name', 'building_floor'];
+
     public function visits(): HasMany
     {
         return $this->hasMany(visits::class);
@@ -40,13 +42,5 @@ class departments extends Model
             }
         );
     }
-
-/*
-    // Lo que hace aquí es darle un 'atributo' para que laravel vea que es un algo
-    protected function casts():array{
-        return[
-            'published_at' => 'datetime',
-        ];
-    } */
 
 }
