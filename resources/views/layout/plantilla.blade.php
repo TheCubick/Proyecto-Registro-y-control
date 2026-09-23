@@ -15,7 +15,7 @@
 
     </head>
 
-    <body class="bg-[#EAEFFA] text-gray-800 min-h-screen flex flex-col justify-between">
+    <body class="bg-[#ffffff] text-gray-800 min-h-screen flex flex-col justify-between">
 
                     {{-- fondo,  linea,  resaltado de linea, color de sombra --}}
         <header class="sticky top-0 z-20 border-b border-gray-200/80 bg-[#FBFBFA]/95 backdrop-blur-md">

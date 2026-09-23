@@ -6,9 +6,10 @@
 @section('content')
 
     @if (session('message'))
-        <div class="mb-6 rounded-lg bg-green-100 px-4 py-3 text-green-800">
+        <x-alert type="success" class="mb-6">
+            <x-slot name="title">Correcto</x-slot>
             {{ session('message') }}
-        </div>
+        </x-alert>
     @endif
 
     <section class="space-y-8">
@@ -53,12 +54,18 @@
                                 <td class="px-5 py-4 text-slate-600">{{ $department->building_floor }}</td>
                                 <td class="px-5 py-4 text-right">
                                     <div class="flex justify-end gap-3">
-                                        <a href="{{ route('departments.edit', $department->id) }}">Editar</a>
+                                        <form action="{{ route('departments.edit', $department->id) }}" method="GET">
+                                            <button type="submit" class="inline-flex items-center rounded-lg border border-[#2757C8] px-3 py-2 text-xs font-semibold text-[#2757C8] transition hover:bg-blue-50 focus:outline-none focus:ring-4 focus:ring-[#2757C8]/20">
+                                                Editar
+                                            </button>
+                                        </form>
 
                                         <form action="{{ route('departments.destroy', $department->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit">Eliminar</button>
+                                            <button type="submit" class="inline-flex items-center rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-500/20">
+                                                Eliminar
+                                            </button>
                                         </form>
                                     </div>
                                 </td>

@@ -11,7 +11,7 @@
     @endphp
 
     <x-form-card
-        title="{{ $isedit ? 'Editar departmento' : 'Nuevo departamento'}}"
+        title="{{ $isedit ? 'Editar departamento' : 'Nuevo departamento' }}"
         description="{{ $isedit ? 'Actualizar información del departamento' : 'Registrar nuevo departamento' }}"
         action="{{ $isedit ? route('departments.update', $department->id) : route('departments.store') }}"
         back-route="{{ route('departments.index') }}"

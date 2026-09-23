@@ -23,12 +23,15 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:departments, name',
+            'name' => 'required|string|max:255|unique:departments,name',
             'building_floor' => 'required|string|max:255',
         ];
     }
 
-    public function message(): array{
-        return['name.unique' => 'Este departamento ya existe'];
+    public function messages(): array
+    {
+        return [
+            'name.unique' => 'Este departamento ya existe.',
+        ];
     }
 }
