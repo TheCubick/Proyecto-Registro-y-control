@@ -19,7 +19,13 @@ Route::put('/departamentos/{id}', [Departmentscontroller::class, 'update'])->nam
 Route::delete('/departamentos/{id}', [Departmentscontroller::class, 'destroy'])->name('departments.destroy');
 
                 // VISITOR
-Route::get('/visitantes', [VisitorController::class, 'index']) -> name ('visitors.index');
+Route::get('/visitantes', [VisitorController::class, 'index'])->name('visitors.index');
+Route::get('/visitantes/crear', [VisitorController::class, 'create'])->name('visitors.create');
+Route::post('/visitantes', [VisitorController::class, 'store'])->name('visitors.store');
+Route::get('/visitantes/{id}', [VisitorController::class, 'show'])->name('visitors.show');
+Route::get('/visitantes/{id}/editar', [VisitorController::class, 'edit'])->name('visitors.edit');
+Route::put('/visitantes/{id}', [VisitorController::class, 'update'])->name('visitors.update');
+Route::delete('/visitantes/{id}', [VisitorController::class, 'destroy'])->name('visitors.destroy');
 
                 // VISITIS
 Route::get('/visitas', [VisitController::class, 'index']) -> name ('visits.index');
