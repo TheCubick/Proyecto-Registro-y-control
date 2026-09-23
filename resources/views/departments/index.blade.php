@@ -5,6 +5,12 @@
 
 @section('content')
 
+    @if (session('message'))
+        <div class="mb-6 rounded-lg bg-green-100 px-4 py-3 text-green-800">
+            {{ session('message') }}
+        </div>
+    @endif
+
     <section class="space-y-8">
         <div class="flex flex-col gap-6 border-b border-gray-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -36,7 +42,8 @@
                     <thead class="bg-slate-50 text-xs uppercase tracking-[0.08em] text-slate-500">
                         <tr>
                             <th class="px-5 py-3 font-semibold">Departamento</th>
-                            <th class="px-5 py-3 font-semibold">Piso / edificio</th>
+                            <th class="px-5 py-3 font-semibold">Edificio / Piso</th>
+                            <th class="px-5 py-3 text-right font-semibold">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -44,10 +51,21 @@
                             <tr class="transition hover:bg-blue-50/40">
                                 <td class="px-5 py-4 font-medium text-slate-800">{{ $department->name }}</td>
                                 <td class="px-5 py-4 text-slate-600">{{ $department->building_floor }}</td>
+                                <td class="px-5 py-4 text-right">
+                                    <div class="flex justify-end gap-3">
+                                        <a href="{{ route('departments.edit', $department->id) }}">Editar</a>
+
+                                        <form action="{{ route('departments.destroy', $department->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="2" class="px-5 py-10 text-center text-sm text-slate-500">Aún no hay departamentos registrados.</td>
+                                <td colspan="3" class="px-5 py-10 text-center text-sm text-slate-500">Aún no hay departamentos registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -57,5 +75,3 @@
     </div>
 
 @endsection
-
-

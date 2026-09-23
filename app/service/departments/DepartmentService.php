@@ -10,4 +10,18 @@ class DepartmentService{
     {
         return departments::create($data);
     }
+
+    public function find(int $id): departments{
+        return departments::findorfail($id);
+    }
+
+    public function update(int $id, array $data): bool
+    {
+        return departments::where('id', $id)->update($data) > 0;
+    }
+
+    public function delete(int $id): bool
+    {
+        return departments::where('id', $id)->delete() > 0;
+    }
 }

@@ -6,20 +6,20 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Departments\StoreDepartmentRequest;
 use App\Models\departments;
 use App\service\departments\DepartmentService;
+use App\Http\Requests\Departments\UpdateDepartmentRequest;
 
 class Departmentscontroller extends Controller
 {
+    private DepartmentService $departmentService;
 
-    private DepartmentService $DepartmentService;
-
-    public function __construct(DepartmentService $DepartmentService)
+    public function __construct(DepartmentService $departmentService)
     {
-        $this -> DepartmentService = $DepartmentService;
+        $this->departmentService = $departmentService;
     }
 
     public function index()
     {
-        $departments = departments::paginate(5);
+        $departments = departments::paginate(10);
         return view('departments.index', compact('departments'));
     }
 
@@ -30,9 +30,9 @@ class Departmentscontroller extends Controller
 
     public function store(StoreDepartmentRequest $request)
     {
-        $this->DepartmentService->create($request->validated());
+        $this->departmentService->create($request->validated());
 
-        return redirect() -> route('departments.index') -> with('success', 'Departamento creado correctamente.');
+        return redirect()->route('departments.index')->with('message', 'Departamento creado correctamente.');
     }
 
     public function show(string $id)
@@ -40,18 +40,22 @@ class Departmentscontroller extends Controller
         //
     }
 
-    public function edit(string $id)
+    public function edit(int $id)
     {
-        //
+        $department = $this->departmentService->find($id);
+        return view('departments.create', compact('department'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateDepartmentRequest $request, int $id)
     {
-        //
+        $this->departmentService->update($id, $request->validated());
+
+        return redirect()->route('departments.index')->with('message', 'Departamento actualizado exitosamente.');
     }
 
     public function destroy(string $id)
     {
-        //
+        $this->departmentService->delete($id);
+        return redirect()->route('departments.index')->with('message', 'Departamento eliminado exitosamente');
     }
 }
