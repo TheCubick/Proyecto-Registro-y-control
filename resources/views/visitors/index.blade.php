@@ -31,7 +31,7 @@
                     <h2 class="text-base font-semibold text-slate-900">Listado registrado</h2>
                     <p class="mt-1 text-xs text-slate-500">{{ $visitors->total() }} visitantes disponibles</p>
                 </div>
-                <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-[#2757C8]">Activos</span>
+                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">Activos</span>
             </div>
 
             <div class="overflow-x-auto">
