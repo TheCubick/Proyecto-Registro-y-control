@@ -46,10 +46,7 @@ RUN composer install \
 COPY . .
 
 # 7. Actualizamos el Autoload
-RUN composer dump-autoload \
-    --no-interaction \
-    --no-dev \
-    --optimize
+RUN composer dump-autoload --optimize
 
 # 8. Configuramos Apache para que apunte a la carpeta /public de Laravel y damos permisos
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
