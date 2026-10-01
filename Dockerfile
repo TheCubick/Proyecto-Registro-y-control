@@ -32,14 +32,13 @@ COPY . .
 # 4. Liberamos la memoria RAM para que Render no mate el proceso
 ENV COMPOSER_MEMORY_LIMIT=-1
 
-# 5. Instalamos dependencias y generamos el autoload
+# 5. Instalamos todo de forma segura
 RUN composer install \
     --no-interaction \
     --prefer-dist \
     --optimize-autoloader \
     --no-dev \
-    --no-scripts \
-    --ignore-platform-reqs
+    --no-scripts
 
 # 6. Configuramos Apache para que apunte a la carpeta /public de Laravel y damos permisos
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
