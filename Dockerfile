@@ -5,11 +5,13 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libpq-dev \
     zip \
     unzip \
     git \
     && docker-php-ext-install \
         pdo_mysql \
+        pdo_pgsql \
         mbstring \
         exif \
         pcntl \
@@ -24,9 +26,12 @@ WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
 
+ENV COMPOSER_MEMORY_LIMIT=-1
+
 RUN composer install \
     --no-interaction \
     --prefer-dist \
+    --no-progress \
     --optimize-autoloader \
     --no-dev \
     --no-scripts
