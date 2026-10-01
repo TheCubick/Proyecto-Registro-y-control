@@ -17,7 +17,7 @@
         <aside class="flex w-full flex-col border-b border-slate-200 bg-white p-5 md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0 md:border-b-0 md:border-r md:p-6">
             <div class="flex items-center justify-between md:block">
                 <a href="{{ url('/') }}" class="inline-flex rounded-lg p-1 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-[#2757C8]/20">
-                    <img src="{{ secure_asset('logo.png') }}" alt="Control de Acceso" class="h-8 w-auto object-contain">
+                    <img src="{{ asset('logo.png') }}" alt="Control de Acceso" class="h-8 w-auto object-contain">
                 </a>
                 <span class="text-xs font-medium text-slate-400 md:hidden">Menú principal</span>
             </div>
