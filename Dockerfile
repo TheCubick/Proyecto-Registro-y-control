@@ -54,4 +54,4 @@ RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
 
 EXPOSE 80
 
-CMD php artisan migrate --force && apache2-foreground
+CMD php artisan migrate --force --seed && apache2-foreground
