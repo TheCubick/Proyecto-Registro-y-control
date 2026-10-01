@@ -28,9 +28,15 @@ RUN composer install \
     --no-interaction \
     --prefer-dist \
     --optimize-autoloader \
-    --no-dev
+    --no-dev \
+    --no-scripts
 
 COPY . .
+
+RUN composer dump-autoload \
+    --no-interaction \
+    --no-dev \
+    --optimize
 
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
     /etc/apache2/sites-available/000-default.conf \
