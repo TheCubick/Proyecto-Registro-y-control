@@ -20,9 +20,10 @@ class DepartmentCrudTest extends TestCase
         $response = $this->get(route('departments.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('departments.index');
-        $response->assertViewHas('departments');
-        $response->assertSee($department->name);
+        $response->assertInertia(fn ($page) => $page
+            ->component('Departments/Index')
+            ->has('departments.data', 1)
+            ->where('departments.data.0.id', $department->id));
     }
 
     public function test_formcreate(): void
@@ -30,8 +31,7 @@ class DepartmentCrudTest extends TestCase
         $response = $this->get(route('departments.create'));
 
         $response->assertOk();
-        $response->assertViewIs('departments.create');
-        $response->assertSee('Nuevo departamento');
+        $response->assertInertia(fn ($page) => $page->component('Departments/Form'));
     }
 
     public function test_create(): void
@@ -84,10 +84,11 @@ class DepartmentCrudTest extends TestCase
         $response = $this->get(route('departments.edit', $department->id));
 
         $response->assertOk();
-        $response->assertViewIs('departments.create');
-        $response->assertViewHas('department', $department);
-        $response->assertSee('Soporte');
-        $response->assertSee('Piso 2');
+        $response->assertInertia(fn ($page) => $page
+            ->component('Departments/Form')
+            ->where('department.id', $department->id)
+            ->where('department.name', 'Soporte')
+            ->where('department.building_floor', 'Piso 2'));
     }
 
     public function test_puede_actualizar_un_departamento(): void

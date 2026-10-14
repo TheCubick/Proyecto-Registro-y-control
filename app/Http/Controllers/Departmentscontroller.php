@@ -7,6 +7,7 @@ use App\Http\Requests\Departments\StoreDepartmentRequest;
 use App\Models\departments;
 use App\service\departments\DepartmentService;
 use App\Http\Requests\Departments\UpdateDepartmentRequest;
+use Inertia\Inertia;
 
 class Departmentscontroller extends Controller
 {
@@ -20,12 +21,12 @@ class Departmentscontroller extends Controller
     public function index()
     {
         $departments = departments::paginate(10);
-        return view('departments.index', compact('departments'));
+        return Inertia::render('Departments/Index', compact('departments'));
     }
 
     public function create()
     {
-        return view('departments.create');
+        return Inertia::render('Departments/Form');
     }
 
     public function store(StoreDepartmentRequest $request)
@@ -43,7 +44,7 @@ class Departmentscontroller extends Controller
     public function edit(int $id)
     {
         $department = $this->departmentService->find($id);
-        return view('departments.create', compact('department'));
+        return Inertia::render('Departments/Form', compact('department'));
     }
 
     public function update(UpdateDepartmentRequest $request, int $id)

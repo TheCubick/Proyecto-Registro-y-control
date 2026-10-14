@@ -1,3 +1,15 @@
+FROM node:22-alpine AS frontend
+
+WORKDIR /var/www/html
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY resources ./resources
+COPY vite.config.js ./
+
+RUN npm run build
+
 FROM php:8.4-apache
 
 # 1. Instalamos dependencias y extensiones (incluyendo pdo_pgsql para PostgreSQL)
@@ -28,6 +40,9 @@ WORKDIR /var/www/html
 
 # 3. Copiamos todo el proyecto de una vez
 COPY . .
+
+# Copiamos los assets compilados de React/Vite a la imagen final
+COPY --from=frontend /var/www/html/public/build ./public/build
 
 # 4. Liberamos la memoria RAM para que Render no mate el proceso
 ENV COMPOSER_MEMORY_LIMIT=-1

@@ -21,17 +21,17 @@ class VisitorsCrudTest extends TestCase
 
         $response = $this->get(route('visitors.index'));
         $response->assertStatus(200);
-        $response->assertViewIs('visitors.index');
-        $response->assertViewHas('visitors');
-        $response->assertSee($prueba->full_name);
+        $response->assertInertia(fn ($page) => $page
+            ->component('Visitors/Index')
+            ->has('visitors.data', 1)
+            ->where('visitors.data.0.id', $prueba->id));
     }
 
     // prueba el boton de crear
     public function test_formcreate():void{
         $response = $this->get(route('visitors.create'));
         $response->assertOk();
-        $response->assertViewIs('visitors.create');
-        $response->assertSee('Nuevo visitante');
+        $response->assertInertia(fn ($page) => $page->component('Visitors/Form'));
     }
 
     // guarda datos
@@ -87,11 +87,10 @@ class VisitorsCrudTest extends TestCase
         $response = $this->get(route('visitors.edit', $prueba->id));
 
         $response->assertOk();
-        $response->assertViewIs('visitors.create');
-        $response->assertViewHas('visitor', $prueba);
-        $response->assertSee('Pablo Garcia');
-        $response->assertSee('vst-1111');
-        $response->assertSee('9613157627');
+        $response->assertInertia(fn ($page) => $page
+            ->component('Visitors/Form')
+            ->where('visitor.id', $prueba->id)
+            ->where('visitor.identification_number', 'vst-1111'));
     }
 
     // actualiza los datos

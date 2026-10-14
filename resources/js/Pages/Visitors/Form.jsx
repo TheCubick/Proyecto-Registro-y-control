@@ -1,0 +1,11 @@
+import { Link, useForm } from '@inertiajs/react';
+import AppLayout from '../../Layouts/AppLayout';
+
+export default function Form({ visitor }) {
+    const editing = Boolean(visitor);
+    const form = useForm({ full_name: visitor?.full_name ?? '', identification_number: visitor?.identification_number ?? '', phone: visitor?.phone ?? '' });
+    const submit = event => { event.preventDefault(); editing ? form.put(`/visitantes/${visitor.id}`) : form.post('/visitantes'); };
+    return <AppLayout><section className="mx-auto max-w-xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"><div className="bg-[#2757C8] px-6 py-7 text-center text-white"><h1 className="text-2xl font-bold">{editing ? 'Editar visitante' : 'Nuevo visitante'}</h1><p className="mt-2 text-sm text-blue-100">Completa los datos de la persona.</p></div><form onSubmit={submit} className="space-y-5 p-6"><Field label="Nombre completo" value={form.data.full_name} error={form.errors.full_name} onChange={e => form.setData('full_name', e.target.value)} /><Field label="Numero de identificacion" value={form.data.identification_number} error={form.errors.identification_number} onChange={e => form.setData('identification_number', e.target.value)} /><Field label="Telefono" value={form.data.phone} error={form.errors.phone} onChange={e => form.setData('phone', e.target.value)} required={false} /><div className="flex justify-between border-t border-slate-100 pt-5"><Link href="/visitantes" className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-[#2757C8]">Cancelar</Link><button disabled={form.processing} className="rounded-lg bg-[#2757C8] px-5 py-2.5 text-sm font-semibold text-white">{form.processing ? 'Guardando...' : editing ? 'Actualizar' : 'Guardar'}</button></div></form></section></AppLayout>;
+}
+
+function Field({ label, value, error, onChange, required = true }) { return <div><label className="mb-1.5 block text-[13px] font-semibold text-slate-700">{label}</label><input value={value} onChange={onChange} required={required} className={`h-10.5 w-full rounded-[10px] border px-3.5 text-sm ${error ? 'border-red-300 bg-red-50/30' : 'border-slate-300'}`} />{error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}</div>; }

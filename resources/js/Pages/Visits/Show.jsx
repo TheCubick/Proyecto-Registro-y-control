@@ -1,0 +1,7 @@
+import { Link } from '@inertiajs/react';
+import AppLayout from '../../Layouts/AppLayout';
+
+export default function Show({ visit }) {
+    const item = (label, value) => <div><dt className="font-semibold text-slate-500">{label}</dt><dd className="mt-1 text-slate-900">{value || 'No registrado'}</dd></div>;
+    return <AppLayout><section className="mx-auto max-w-2xl space-y-6"><div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2757C8]">Control de acceso</p><h1 className="text-3xl font-semibold">Detalle de visita</h1></div><div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"><dl className="grid gap-4 text-sm sm:grid-cols-2">{item('Visitante', visit.visitor?.full_name)}{item('Departamento', visit.department?.name)}{item('Usuario responsable', visit.user?.name)}{item('Motivo', visit.reason)}{item('Gafete', visit.badge_number)}{item('Estado', visit.status)}{item('Entrada', new Date(visit.entry_time).toLocaleString('es-MX'))}{item('Salida', visit.exit_time ? new Date(visit.exit_time).toLocaleString('es-MX') : 'Sin salida')}</dl><div className="mt-6 flex gap-3 border-t border-slate-100 pt-5"><Link href={`/visitas/${visit.id}/editar`} className="rounded-lg bg-[#2757C8] px-4 py-2.5 text-sm font-semibold text-white">Editar</Link><Link href="/visitas" className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-[#2757C8]">Volver</Link></div></div></section></AppLayout>;
+}

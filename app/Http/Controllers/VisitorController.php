@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Visitors\StoreVisitorRequest;
 use App\Http\Requests\Visitors\UpdateVisitorRequest;
 use App\service\visitors\VisitorService;
+use Inertia\Inertia;
 
 class VisitorController extends Controller
 {
@@ -16,12 +17,12 @@ class VisitorController extends Controller
     {
         $visitors = $this->visitorService->getAll();
 
-        return view('visitors.index', compact('visitors'));
+        return Inertia::render('Visitors/Index', compact('visitors'));
     }
 
     public function create()
     {
-        return view('visitors.create');
+        return Inertia::render('Visitors/Form');
     }
 
     public function store(StoreVisitorRequest $request)
@@ -37,14 +38,14 @@ class VisitorController extends Controller
     {
         $visitor = $this->visitorService->find($id);
 
-        return view('visitors.show', compact('visitor'));
+        return Inertia::render('Visitors/Show', compact('visitor'));
     }
 
     public function edit(int $id)
     {
         $visitor = $this->visitorService->find($id);
 
-        return view('visitors.create', compact('visitor'));
+        return Inertia::render('Visitors/Form', compact('visitor'));
     }
 
     public function update(UpdateVisitorRequest $request, int $id)

@@ -8,6 +8,7 @@ use App\Models\departments;
 use App\Models\User;
 use App\Models\visitors;
 use App\service\visits\VisitService;
+use Inertia\Inertia;
 
 class VisitController extends Controller
 {
@@ -19,12 +20,12 @@ class VisitController extends Controller
     {
         $visits = $this->visitService->getAll();
 
-        return view('visits.index', compact('visits'));
+        return Inertia::render('Visits/Index', compact('visits'));
     }
 
     public function create()
     {
-        return view('visits.create', [
+        return Inertia::render('Visits/Form', [
             'visitors' => visitors::orderBy('full_name')->get(),
             'departments' => departments::orderBy('name')->get(),
             'users' => User::orderBy('name')->get(),
@@ -44,14 +45,14 @@ class VisitController extends Controller
     {
         $visit = $this->visitService->find($id);
 
-        return view('visits.show', compact('visit'));
+        return Inertia::render('Visits/Show', compact('visit'));
     }
 
     public function edit(int $id)
     {
         $visit = $this->visitService->find($id);
 
-        return view('visits.create', [
+        return Inertia::render('Visits/Form', [
             'visit' => $visit,
             'visitors' => visitors::orderBy('full_name')->get(),
             'departments' => departments::orderBy('name')->get(),

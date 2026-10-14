@@ -52,15 +52,16 @@ class VisitsCrudTest extends TestCase
         $response= $this->get(route('visits.index'));
 
         $response->assertStatus(200);
-        $response->assertViewIs('visits.index');
-        $response->assertSee('Mantenimiento de servidores');
-        $response->assertSee('GAF-05');
+        $response->assertInertia(fn ($page) => $page
+            ->component('Visits/Index')
+            ->has('visits.data', 1)
+            ->where('visits.data.0.reason', 'Mantenimiento de servidores'));
     }
 
     public function test_formcreate():void{
         $response = $this->get(route('visits.create'));
         $response->assertOk();
-        $response->assertViewIs('visits.create');
+        $response->assertInertia(fn ($page) => $page->component('Visits/Form'));
     }
 
     public function test_create():void{
@@ -118,8 +119,10 @@ class VisitsCrudTest extends TestCase
         $response = $this->get(route('visits.edit', $visita->id));
 
         $response->assertOk();
-        $response->assertViewIs('visits.create');
-        $response->assertSee('Mantenimiento');
+        $response->assertInertia(fn ($page) => $page
+            ->component('Visits/Form')
+            ->where('visit.id', $visita->id)
+            ->where('visit.reason', 'Mantenimiento'));
     }
 
     public function test_actualizar():void{
