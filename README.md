@@ -267,7 +267,6 @@ Variables principales definidas en `render.yaml`:
 | Documento | Para quién | Contenido |
 |---|---|---|
 | [DOCUMENTACION_TECNICA.md](docs/DOCUMENTACION_TECNICA.md) | Evaluación académica / equipo técnico | Arquitectura, ERD, diccionario de datos, RBAC, casos de uso, DevOps, testing |
-| [REPORTE_EJECUTIVO_SERVICIO_SOCIAL.md](docs/REPORTE_EJECUTIVO_SERVICIO_SOCIAL.md) | Supervisor de Servicio Social | Informe formal de avance y resultados |
 | [MANUAL_USUARIO.md](docs/MANUAL_USUARIO.md) | Operadores (Admin, Recepción, Guardia) | Uso paso a paso de cada módulo |
 | [ROADMAP_BACKEND_PENDIENTE.md](docs/ROADMAP_BACKEND_PENDIENTE.md) | Desarrollador | Auditoría del backend y plan de implementación |
 | [ESPECIFICACION_WIZARD.md](docs/ESPECIFICACION_WIZARD.md) | Diseño | Sistema de diseño Cobalt Flow y especificación del Modal Wizard |
