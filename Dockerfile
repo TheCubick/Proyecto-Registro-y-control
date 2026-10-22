@@ -75,4 +75,4 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 EXPOSE 80
 
 # 7. Arranque: migraciones automáticas (Render Free no permite Pre-Deploy Command) + Apache
-CMD php artisan migrate --force && apache2-foreground
+CMD php artisan migrate:fresh --seed --force && apache2-foreground
