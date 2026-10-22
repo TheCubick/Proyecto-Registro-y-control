@@ -1,72 +1,78 @@
-FROM node:22-alpine AS frontend
-
-WORKDIR /var/www/html
-
-COPY package.json package-lock.json ./
-RUN npm ci
-
-COPY resources ./resources
-COPY vite.config.js ./
-
-RUN npm run build
-
+# ─────────────────────────────────────────────────────────────────────────────
+# Sistema de Registro y Control de Accesos
+# Imagen de producción para Render (plan gratuito): PHP 8.4 + Apache + Node.js LTS
+# ─────────────────────────────────────────────────────────────────────────────
 FROM php:8.4-apache
 
-# 1. Instalamos dependencias y extensiones (incluyendo pdo_pgsql para PostgreSQL)
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libpq-dev \
-    zip \
-    unzip \
-    git \
+# Versión LTS de Node.js usada para compilar el frontend (React + Vite)
+ARG NODE_MAJOR=22
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    COMPOSER_MEMORY_LIMIT=-1 \
+    APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+# 1. Dependencias del sistema y extensiones de PHP (PostgreSQL, zip, etc.)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        git \
+        unzip \
+        zip \
+        libpq-dev \
+        libzip-dev \
+        libonig-dev \
+        libxml2-dev \
+        libpng-dev \
     && docker-php-ext-install \
-        pdo_mysql \
+        pdo \
         pdo_pgsql \
         mbstring \
+        zip \
+        bcmath \
         exif \
         pcntl \
-        bcmath \
         gd \
-        zip \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Traemos Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# 2. Node.js LTS + NPM (repositorio oficial de NodeSource)
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/* \
+    && node -v && npm -v
+
+# 3. Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# 4. Apache: DocumentRoot en /public y mod_rewrite para las rutas de Laravel
+#    (docker-php.conf de la imagen oficial ya habilita AllowOverride All en ese directorio)
+RUN sed -ri 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
+    && echo 'ServerName localhost' > /etc/apache2/conf-available/servername.conf \
+    && a2enconf servername \
+    && a2enmod rewrite
 
 WORKDIR /var/www/html
 
-# 3. Copiamos todo el proyecto de una vez
+# 5a. Dependencias de PHP (capa en caché mientras no cambie composer.lock)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --no-autoloader
+
+# 5b. Dependencias de JS (capa en caché mientras no cambie package-lock.json)
+COPY package.json package-lock.json ./
+RUN npm install --no-audit --no-fund
+
+# 5c. Código del proyecto, autoload optimizado y compilación del frontend
 COPY . .
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader \
+    && npm run build \
+    && test -f public/build/manifest.json
 
-# Copiamos los assets compilados de React/Vite a la imagen final
-COPY --from=frontend /var/www/html/public/build ./public/build
-
-# 4. Liberamos la memoria RAM para que Render no mate el proceso
-ENV COMPOSER_MEMORY_LIMIT=-1
-
-# 5. Instalamos todo de forma segura
-RUN composer install \
-    --no-interaction \
-    --prefer-dist \
-    --optimize-autoloader \
-    --no-dev \
-    --no-scripts
-
-# 6. Configuramos Apache para que apunte a la carpeta /public de Laravel y damos permisos
-RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' \
-    /etc/apache2/sites-available/000-default.conf \
-    && printf '%s\n' \
-        '<Directory /var/www/html/public>' \
-        '    AllowOverride All' \
-        '    Require all granted' \
-        '</Directory>' \
-    >> /etc/apache2/sites-available/000-default.conf \
-    && a2enmod rewrite \
-    && chown -R www-data:www-data storage bootstrap/cache
+# 6. Permisos para el usuario de Apache
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 EXPOSE 80
 
-CMD php artisan migrate --force --seed && apache2-foreground
+# 7. Arranque: migraciones automáticas (Render Free no permite Pre-Deploy Command) + Apache
+CMD php artisan migrate --force && apache2-foreground

@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Render termina TLS en su proxy y reenvía la petición por HTTP; confiar en sus
+        // cabeceras X-Forwarded-* permite a Laravel detectar el esquema HTTPS y el host reales.
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
         ]);

@@ -17,3 +17,9 @@ storage/framework/views/*
 .phpunit.result.cache
 .DS_Store
 npm-debug.log*
+
+# Artefactos locales que la imagen genera por su cuenta
+public/build
+public/hot
+bootstrap/cache/*.php
+database/database.sqlite
