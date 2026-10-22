@@ -5,13 +5,32 @@ namespace App\Http\Requests\Visits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Valida los datos para el registro de una visita.
+ *
+ * Laravel ejecuta esta clase antes de entrar al controlador: si la validación
+ * falla, redirige de vuelta con los errores, que Inertia expone en `form.errors`.
+ * Regla de negocio: Visitante, departamento y usuario deben existir; la salida no puede ser anterior a la entrada.
+ */
 class StoreVisitRequest extends FormRequest
 {
+    /**
+     * Determina si el usuario puede realizar esta petición.
+     *
+     * Actualmente permite a todos; aquí se aplicará la autorización por rol (RBAC).
+     *
+     * @return bool
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * Reglas de validación de los campos.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
@@ -26,6 +45,11 @@ class StoreVisitRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes de error personalizados en español.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [

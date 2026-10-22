@@ -1,46 +1,112 @@
-import { Link, useForm } from '@inertiajs/react';
+/**
+ * Listado de departamentos (`departments.index`).
+ *
+ * @param {Object} props
+ * @param {Object} props.departments Paginador de Laravel con los departamentos (`data`, `links`, `total`...).
+ */
+import { Head, useForm } from '@inertiajs/react';
+import { Building2, CalendarDays, MapPin, Pencil, Plus, Settings2, Trash2 } from 'lucide-react';
+import Badge from '../../Components/UI/Badge';
+import Button, { ButtonLink } from '../../Components/UI/Button';
+import Card, { CardHeader } from '../../Components/UI/Card';
+import EmptyState from '../../Components/UI/EmptyState';
+import IconTile from '../../Components/UI/IconTile';
+import PageHeader from '../../Components/UI/PageHeader';
+import Pagination from '../../Components/UI/Pagination';
+import Table, { TableHead, Td, rowClass, tbodyClass } from '../../Components/UI/Table';
+import { formatDate } from '../../lib/format';
 import AppLayout from '../../Layouts/AppLayout';
-import FlashMessage from '../../Components/FlashMessage';
+
+const COLUMNS = [
+    { label: 'Departamento', icon: Building2 },
+    { label: 'Edificio / Piso', icon: MapPin },
+    { label: 'Alta', icon: CalendarDays },
+    { label: 'Acciones', icon: Settings2, align: 'right' },
+];
 
 export default function Index({ departments }) {
     const { delete: destroy } = useForm();
     const rows = departments.data ?? departments;
 
+    /**
+     * Solicita confirmación y elimina el departamento.
+     *
+     * @param {number} id
+     */
     const remove = id => {
-        if (window.confirm('¿Eliminar este departamento?')) {
+        if (window.confirm('¿Eliminar este departamento? Se eliminarán también sus visitas.')) {
             destroy(`/departamentos/${id}`);
         }
     };
 
     return (
         <AppLayout>
-            <FlashMessage />
-            <section className="space-y-8">
-                <header className="flex flex-col gap-6 border-b border-gray-200 pb-6 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2757C8]">Directorio operativo</p>
-                        <h1 className="text-3xl font-semibold tracking-tight text-slate-900">Departamentos</h1>
-                        <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">Administra los espacios y niveles disponibles.</p>
-                    </div>
-                    <Link href="/departamentos/crear" className="rounded-lg bg-[#2757C8] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#234DAF]">Nuevo departamento</Link>
-                </header>
-                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-                    <div className="border-b border-gray-200 px-5 py-4">
-                        <h2 className="text-base font-semibold text-slate-900">Listado registrado</h2>
-                        <p className="mt-1 text-xs text-slate-500">{departments.total ?? rows.length} departamentos disponibles</p>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full min-w-[600px] text-left text-sm">
-                            <thead className="bg-slate-50 text-xs uppercase tracking-[0.08em] text-slate-500"><tr><th className="px-5 py-3">Departamento</th><th className="px-5 py-3">Edificio / Piso</th><th className="px-5 py-3 text-right">Acciones</th></tr></thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {rows.length ? rows.map(department => (
-                                    <tr key={department.id} className="hover:bg-blue-50/40"><td className="px-5 py-4 font-medium">{department.name}</td><td className="px-5 py-4 text-slate-600">{department.building_floor}</td><td className="px-5 py-4 text-right"><div className="flex justify-end gap-3"><Link href={`/departamentos/${department.id}/editar`} className="rounded-lg border border-[#2757C8] px-3 py-2 text-xs font-semibold text-[#2757C8]">Editar</Link><button onClick={() => remove(department.id)} className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600">Eliminar</button></div></td></tr>
-                                )) : <tr><td colSpan="3" className="px-5 py-10 text-center text-slate-500">Aun no hay departamentos registrados.</td></tr>}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+            <Head title="Departamentos" />
+            <div className="space-y-6">
+                <PageHeader
+                    eyebrow="Directorio operativo"
+                    title="Departamentos"
+                    description="Administra las áreas del edificio y su ubicación."
+                    icon={Building2}
+                    tone="violet"
+                    actions={
+                        <ButtonLink href="/departamentos/crear" icon={Plus}>
+                            Nuevo departamento
+                        </ButtonLink>
+                    }
+                />
+
+                <Card className="overflow-hidden">
+                    <CardHeader
+                        title="Listado registrado"
+                        description="Áreas disponibles como destino de las visitas"
+                        actions={<Badge tone="violet">{departments.total ?? rows.length} departamentos</Badge>}
+                    />
+                    {rows.length ? (
+                        <>
+                            <Table className="min-w-160">
+                                <TableHead columns={COLUMNS} />
+                                <tbody className={tbodyClass}>
+                                    {rows.map(department => (
+                                        <tr key={department.id} className={rowClass}>
+                                            <Td>
+                                                <div className="flex items-center gap-3">
+                                                    <IconTile icon={Building2} tone="violet" size="sm" />
+                                                    <span className="font-semibold text-ink">{department.name}</span>
+                                                </div>
+                                            </Td>
+                                            <Td className="text-slate-600">{department.building_floor}</Td>
+                                            <Td className="text-slate-500">{formatDate(department.created_at)}</Td>
+                                            <Td align="right">
+                                                <div className="flex justify-end gap-2">
+                                                    <ButtonLink href={`/departamentos/${department.id}/editar`} variant="secondary" size="sm" icon={Pencil}>
+                                                        Editar
+                                                    </ButtonLink>
+                                                    <Button onClick={() => remove(department.id)} variant="danger" size="sm" icon={Trash2}>
+                                                        Eliminar
+                                                    </Button>
+                                                </div>
+                                            </Td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                            <Pagination paginator={departments} noun="departamentos" />
+                        </>
+                    ) : (
+                        <EmptyState
+                            icon={Building2}
+                            title="Aún no hay departamentos registrados"
+                            description="Registra las áreas del edificio para poder asignarlas como destino de las visitas."
+                            action={
+                                <ButtonLink href="/departamentos/crear" icon={Plus}>
+                                    Nuevo departamento
+                                </ButtonLink>
+                            }
+                        />
+                    )}
+                </Card>
+            </div>
         </AppLayout>
     );
 }

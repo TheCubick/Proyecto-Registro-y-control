@@ -5,6 +5,13 @@ namespace App\Http\Requests\Departments;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Valida los datos para el alta de un departamento.
+ *
+ * Laravel ejecuta esta clase antes de entrar al controlador: si la validación
+ * falla, redirige de vuelta con los errores, que Inertia expone en `form.errors`.
+ * Regla de negocio: El nombre debe ser único en la tabla `departments`.
+ */
 class StoreDepartmentRequest extends FormRequest
 {
     /**
@@ -28,6 +35,11 @@ class StoreDepartmentRequest extends FormRequest
         ];
     }
 
+    /**
+     * Mensajes de error personalizados en español.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [

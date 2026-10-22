@@ -1,9 +1,121 @@
-import { Link, useForm } from '@inertiajs/react';
+/**
+ * Listado de visitantes (`visitors.index`).
+ *
+ * @param {Object} props
+ * @param {Object} props.visitors Paginador de Laravel con los visitantes (`data`, `links`, `total`...).
+ */
+import { Head, useForm } from '@inertiajs/react';
+import { CalendarDays, Eye, IdCard, Pencil, Phone, Settings2, Trash2, UserPlus, UserRound, Users } from 'lucide-react';
+import Avatar from '../../Components/UI/Avatar';
+import Badge from '../../Components/UI/Badge';
+import Button, { ButtonLink } from '../../Components/UI/Button';
+import Card, { CardHeader } from '../../Components/UI/Card';
+import EmptyState from '../../Components/UI/EmptyState';
+import PageHeader from '../../Components/UI/PageHeader';
+import Pagination from '../../Components/UI/Pagination';
+import Table, { TableHead, Td, rowClass, tbodyClass } from '../../Components/UI/Table';
+import { formatDate } from '../../lib/format';
 import AppLayout from '../../Layouts/AppLayout';
-import FlashMessage from '../../Components/FlashMessage';
+
+const COLUMNS = [
+    { label: 'Nombre completo', icon: UserRound },
+    { label: 'Identificación', icon: IdCard },
+    { label: 'Teléfono', icon: Phone },
+    { label: 'Registro', icon: CalendarDays },
+    { label: 'Acciones', icon: Settings2, align: 'right' },
+];
 
 export default function Index({ visitors }) {
     const { delete: destroy } = useForm();
     const rows = visitors.data ?? visitors;
-    return <AppLayout><FlashMessage /><section className="space-y-8"><header className="flex flex-col gap-6 border-b border-gray-200 pb-6 sm:flex-row sm:items-end sm:justify-between"><div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2757C8]">Directorio operativo</p><h1 className="text-3xl font-semibold">Visitantes</h1><p className="mt-2 text-sm text-slate-500">Administra las personas autorizadas.</p></div><Link href="/visitantes/crear" className="rounded-lg bg-[#2757C8] px-4 py-2.5 text-sm font-semibold text-white">Nuevo visitante</Link></header><div className="overflow-hidden rounded-xl border border-gray-200 bg-white"><div className="border-b border-gray-200 px-5 py-4"><h2 className="font-semibold">Listado registrado</h2><p className="mt-1 text-xs text-slate-500">{visitors.total ?? rows.length} visitantes disponibles</p></div><div className="overflow-x-auto"><table className="w-full min-w-[700px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-5 py-3">Nombre completo</th><th className="px-5 py-3">Identificacion</th><th className="px-5 py-3">Telefono</th><th className="px-5 py-3 text-right">Acciones</th></tr></thead><tbody className="divide-y divide-gray-100">{rows.length ? rows.map(visitor => <tr key={visitor.id} className="hover:bg-blue-50/40"><td className="px-5 py-4 font-medium">{visitor.full_name}</td><td className="px-5 py-4 text-slate-600">{visitor.identification_number}</td><td className="px-5 py-4 text-slate-600">{visitor.phone || 'No registrado'}</td><td className="px-5 py-4 text-right"><div className="flex justify-end gap-3"><Link href={`/visitantes/${visitor.id}`} className="rounded-lg border border-slate-300 px-3 py-2 text-xs">Ver</Link><Link href={`/visitantes/${visitor.id}/editar`} className="rounded-lg border border-[#2757C8] px-3 py-2 text-xs text-[#2757C8]">Editar</Link><button onClick={() => window.confirm('¿Eliminar este visitante?') && destroy(`/visitantes/${visitor.id}`)} className="rounded-lg border border-red-200 px-3 py-2 text-xs text-red-600">Eliminar</button></div></td></tr>) : <tr><td colSpan="4" className="px-5 py-10 text-center text-slate-500">Aun no hay visitantes registrados.</td></tr>}</tbody></table></div></div></section></AppLayout>;
+
+    /**
+     * Solicita confirmación y elimina al visitante.
+     *
+     * @param {number} id
+     */
+    const remove = id => {
+        if (window.confirm('¿Eliminar este visitante? Se eliminarán también sus visitas.')) {
+            destroy(`/visitantes/${id}`);
+        }
+    };
+
+    return (
+        <AppLayout>
+            <Head title="Visitantes" />
+            <div className="space-y-6">
+                <PageHeader
+                    eyebrow="Directorio operativo"
+                    title="Visitantes"
+                    description="Catálogo de personas externas autorizadas para ingresar."
+                    icon={Users}
+                    tone="sky"
+                    actions={
+                        <ButtonLink href="/visitantes/crear" icon={UserPlus}>
+                            Nuevo visitante
+                        </ButtonLink>
+                    }
+                />
+
+                <Card className="overflow-hidden">
+                    <CardHeader
+                        title="Listado registrado"
+                        description="Ordenado del registro más reciente al más antiguo"
+                        actions={<Badge tone="sky">{visitors.total ?? rows.length} visitantes</Badge>}
+                    />
+                    {rows.length ? (
+                        <>
+                            <Table className="min-w-190">
+                                <TableHead columns={COLUMNS} />
+                                <tbody className={tbodyClass}>
+                                    {rows.map(visitor => (
+                                        <tr key={visitor.id} className={rowClass}>
+                                            <Td>
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar name={visitor.full_name} />
+                                                    <span className="font-semibold text-ink">{visitor.full_name}</span>
+                                                </div>
+                                            </Td>
+                                            <Td>
+                                                <span className="rounded-md bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">{visitor.identification_number}</span>
+                                            </Td>
+                                            <Td className="text-slate-600">
+                                                {visitor.phone || <Badge tone="slate">No registrado</Badge>}
+                                            </Td>
+                                            <Td className="text-slate-500">{formatDate(visitor.created_at)}</Td>
+                                            <Td align="right">
+                                                <div className="flex justify-end gap-2">
+                                                    <ButtonLink href={`/visitantes/${visitor.id}`} variant="ghost" size="sm" icon={Eye}>
+                                                        Ver
+                                                    </ButtonLink>
+                                                    <ButtonLink href={`/visitantes/${visitor.id}/editar`} variant="secondary" size="sm" icon={Pencil}>
+                                                        Editar
+                                                    </ButtonLink>
+                                                    <Button onClick={() => remove(visitor.id)} variant="danger" size="sm" icon={Trash2}>
+                                                        Eliminar
+                                                    </Button>
+                                                </div>
+                                            </Td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                            <Pagination paginator={visitors} noun="visitantes" />
+                        </>
+                    ) : (
+                        <EmptyState
+                            icon={Users}
+                            title="Aún no hay visitantes registrados"
+                            description="Registra a la primera persona para poder crear visitas a su nombre."
+                            action={
+                                <ButtonLink href="/visitantes/crear" icon={UserPlus}>
+                                    Nuevo visitante
+                                </ButtonLink>
+                            }
+                        />
+                    )}
+                </Card>
+            </div>
+        </AppLayout>
+    );
 }

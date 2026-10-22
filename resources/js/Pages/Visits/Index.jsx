@@ -1,9 +1,154 @@
-import { Link, useForm } from '@inertiajs/react';
+/**
+ * Listado de visitas (`visits.index`).
+ *
+ * Muestra indicadores de la página actual (personas dentro, salidas, gafetes
+ * pendientes) y la tabla de visitas con su estado.
+ *
+ * @param {Object} props
+ * @param {Object} props.visits Paginador de Laravel; cada visita incluye `visitor`, `department` y `user`.
+ */
+import { Head, useForm } from '@inertiajs/react';
+import { Building2, CircleCheck, ClipboardList, DoorOpen, Eye, LogIn, LogOut, MessageSquareText, Pencil, Plus, Settings2, Ticket, TicketX, Trash2, UserRound, Activity } from 'lucide-react';
+import Avatar from '../../Components/UI/Avatar';
+import Badge, { StatusBadge } from '../../Components/UI/Badge';
+import Button, { ButtonLink } from '../../Components/UI/Button';
+import Card, { CardHeader } from '../../Components/UI/Card';
+import EmptyState from '../../Components/UI/EmptyState';
+import PageHeader from '../../Components/UI/PageHeader';
+import Pagination from '../../Components/UI/Pagination';
+import StatCard from '../../Components/UI/StatCard';
+import Table, { TableHead, Td, rowClass, tbodyClass } from '../../Components/UI/Table';
+import { formatDateTime } from '../../lib/format';
 import AppLayout from '../../Layouts/AppLayout';
-import FlashMessage from '../../Components/FlashMessage';
+
+const COLUMNS = [
+    { label: 'Visitante', icon: UserRound },
+    { label: 'Departamento', icon: Building2 },
+    { label: 'Motivo', icon: MessageSquareText },
+    { label: 'Gafete', icon: Ticket },
+    { label: 'Entrada', icon: LogIn },
+    { label: 'Salida', icon: LogOut },
+    { label: 'Estado', icon: Activity },
+    { label: 'Acciones', icon: Settings2, align: 'right' },
+];
 
 export default function Index({ visits }) {
     const { delete: destroy } = useForm();
     const rows = visits.data ?? visits;
-    return <AppLayout><FlashMessage /><section className="space-y-8"><header className="flex flex-col gap-6 border-b border-gray-200 pb-6 sm:flex-row sm:items-end sm:justify-between"><div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2757C8]">Control de acceso</p><h1 className="text-3xl font-semibold">Visitas</h1><p className="mt-2 text-sm text-slate-500">Registra y consulta los accesos.</p></div><Link href="/visitas/crear" className="rounded-lg bg-[#2757C8] px-4 py-2.5 text-sm font-semibold text-white">Nueva visita</Link></header><div className="overflow-hidden rounded-xl border border-gray-200 bg-white"><div className="border-b border-gray-200 px-5 py-4"><h2 className="font-semibold">Listado registrado</h2><p className="mt-1 text-xs text-slate-500">{visits.total ?? rows.length} visitas disponibles</p></div><div className="overflow-x-auto"><table className="w-full min-w-[900px] text-left text-sm"><thead className="bg-slate-50 text-xs uppercase text-slate-500"><tr><th className="px-5 py-3">Visitante</th><th className="px-5 py-3">Departamento</th><th className="px-5 py-3">Motivo</th><th className="px-5 py-3">Gafete</th><th className="px-5 py-3">Entrada</th><th className="px-5 py-3">Estado</th><th className="px-5 py-3 text-right">Acciones</th></tr></thead><tbody className="divide-y divide-gray-100">{rows.length ? rows.map(visit => <tr key={visit.id} className="hover:bg-blue-50/40"><td className="px-5 py-4 font-medium">{visit.visitor?.full_name}</td><td className="px-5 py-4">{visit.department?.name}</td><td className="px-5 py-4">{visit.reason}</td><td className="px-5 py-4">{visit.badge_number || 'No asignado'}</td><td className="px-5 py-4">{new Date(visit.entry_time).toLocaleString('es-MX')}</td><td className="px-5 py-4">{visit.status}</td><td className="px-5 py-4 text-right"><div className="flex justify-end gap-3"><Link href={`/visitas/${visit.id}`} className="rounded-lg border border-slate-300 px-3 py-2 text-xs">Ver</Link><Link href={`/visitas/${visit.id}/editar`} className="rounded-lg border border-[#2757C8] px-3 py-2 text-xs text-[#2757C8]">Editar</Link><button onClick={() => window.confirm('¿Eliminar esta visita?') && destroy(`/visitas/${visit.id}`)} className="rounded-lg border border-red-200 px-3 py-2 text-xs text-red-600">Eliminar</button></div></td></tr>) : <tr><td colSpan="7" className="px-5 py-10 text-center text-slate-500">Aun no hay visitas registradas.</td></tr>}</tbody></table></div></div></section></AppLayout>;
+
+    const inside = rows.filter(visit => visit.status === 'dentro').length;
+    const finished = rows.filter(visit => visit.status === 'completado').length;
+    const withoutBadge = rows.filter(visit => visit.status === 'dentro' && !visit.badge_number).length;
+
+    /**
+     * Solicita confirmación y elimina la visita.
+     *
+     * @param {number} id
+     */
+    const remove = id => {
+        if (window.confirm('¿Eliminar esta visita?')) {
+            destroy(`/visitas/${id}`);
+        }
+    };
+
+    return (
+        <AppLayout>
+            <Head title="Visitas" />
+            <div className="space-y-6">
+                <PageHeader
+                    eyebrow="Control de acceso"
+                    title="Visitas"
+                    description="Registra y consulta los ingresos al edificio."
+                    icon={ClipboardList}
+                    actions={
+                        <ButtonLink href="/visitas/crear" icon={Plus}>
+                            Nueva visita
+                        </ButtonLink>
+                    }
+                />
+
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    <StatCard label="Visitas registradas" value={visits.total ?? rows.length} hint="Total histórico" icon={ClipboardList} tone="cobalt" />
+                    <StatCard label="En edificio" value={inside} hint="En la página actual" icon={DoorOpen} tone="emerald" />
+                    <StatCard label="Salidas registradas" value={finished} hint="En la página actual" icon={CircleCheck} tone="slate" />
+                    <StatCard label="Dentro sin gafete" value={withoutBadge} hint="Requieren atención" icon={TicketX} tone={withoutBadge ? 'amber' : 'slate'} />
+                </div>
+
+                <Card className="overflow-hidden">
+                    <CardHeader
+                        title="Bitácora de visitas"
+                        description="Ordenada de la entrada más reciente a la más antigua"
+                        actions={<Badge tone="cobalt">{visits.total ?? rows.length} visitas</Badge>}
+                    />
+                    {rows.length ? (
+                        <>
+                            <Table className="min-w-260">
+                                <TableHead columns={COLUMNS} />
+                                <tbody className={tbodyClass}>
+                                    {rows.map(visit => (
+                                        <tr key={visit.id} className={rowClass}>
+                                            <Td>
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar name={visit.visitor?.full_name} />
+                                                    <div className="min-w-0">
+                                                        <p className="font-semibold text-ink">{visit.visitor?.full_name}</p>
+                                                        <p className="font-mono text-xs text-slate-400">{visit.visitor?.identification_number}</p>
+                                                    </div>
+                                                </div>
+                                            </Td>
+                                            <Td className="text-slate-700">{visit.department?.name}</Td>
+                                            <Td className="max-w-50 truncate text-slate-600" title={visit.reason}>
+                                                {visit.reason}
+                                            </Td>
+                                            <Td>
+                                                {visit.badge_number ? (
+                                                    <Badge tone="cobalt" icon={Ticket} className="font-mono">
+                                                        {visit.badge_number}
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge tone="amber" icon={TicketX}>
+                                                        No asignado
+                                                    </Badge>
+                                                )}
+                                            </Td>
+                                            <Td className="whitespace-nowrap text-slate-600">{formatDateTime(visit.entry_time)}</Td>
+                                            <Td className="whitespace-nowrap text-slate-600">{formatDateTime(visit.exit_time)}</Td>
+                                            <Td>
+                                                <StatusBadge status={visit.status} />
+                                            </Td>
+                                            <Td align="right">
+                                                <div className="flex justify-end gap-2">
+                                                    <ButtonLink href={`/visitas/${visit.id}`} variant="ghost" size="sm" icon={Eye}>
+                                                        Ver
+                                                    </ButtonLink>
+                                                    <ButtonLink href={`/visitas/${visit.id}/editar`} variant="secondary" size="sm" icon={Pencil}>
+                                                        Editar
+                                                    </ButtonLink>
+                                                    <Button onClick={() => remove(visit.id)} variant="danger" size="sm" icon={Trash2}>
+                                                        Eliminar
+                                                    </Button>
+                                                </div>
+                                            </Td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                            <Pagination paginator={visits} noun="visitas" />
+                        </>
+                    ) : (
+                        <EmptyState
+                            icon={ClipboardList}
+                            title="Aún no hay visitas registradas"
+                            description="Cuando una persona ingrese al edificio, regístrala aquí para llevar el control de su estancia."
+                            action={
+                                <ButtonLink href="/visitas/crear" icon={Plus}>
+                                    Registrar visita
+                                </ButtonLink>
+                            }
+                        />
+                    )}
+                </Card>
+            </div>
+        </AppLayout>
+    );
 }

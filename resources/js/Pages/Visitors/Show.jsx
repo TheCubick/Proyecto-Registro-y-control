@@ -1,7 +1,61 @@
-import { Link } from '@inertiajs/react';
+/**
+ * Detalle de un visitante (`visitors.show`).
+ *
+ * @param {Object} props
+ * @param {Object} props.visitor Visitante con `full_name`, `identification_number`, `phone` y fechas.
+ */
+import { Head } from '@inertiajs/react';
+import { ArrowLeft, CalendarDays, IdCard, Pencil, Phone, RefreshCw } from 'lucide-react';
+import Avatar from '../../Components/UI/Avatar';
+import Badge from '../../Components/UI/Badge';
+import { ButtonLink } from '../../Components/UI/Button';
+import Card from '../../Components/UI/Card';
+import DetailItem from '../../Components/UI/DetailItem';
+import { formatDateTime } from '../../lib/format';
 import AppLayout from '../../Layouts/AppLayout';
 
 export default function Show({ visitor }) {
-    return <AppLayout><section className="mx-auto max-w-2xl space-y-6"><div><p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#2757C8]">Directorio operativo</p><h1 className="text-3xl font-semibold">Detalle del visitante</h1></div><div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"><dl className="space-y-4 text-sm"><Item label="Nombre completo" value={visitor.full_name} /><Item label="Identificacion" value={visitor.identification_number} /><Item label="Telefono" value={visitor.phone || 'No registrado'} /></dl><div className="mt-6 flex gap-3 border-t border-slate-100 pt-5"><Link href={`/visitantes/${visitor.id}/editar`} className="rounded-lg bg-[#2757C8] px-4 py-2.5 text-sm font-semibold text-white">Editar</Link><Link href="/visitantes" className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-[#2757C8]">Volver</Link></div></div></section></AppLayout>;
+    return (
+        <AppLayout>
+            <Head title={visitor.full_name} />
+            <div className="mx-auto max-w-3xl space-y-6">
+                <ButtonLink href="/visitantes" variant="ghost" size="sm" icon={ArrowLeft}>
+                    Volver a visitantes
+                </ButtonLink>
+
+                <Card className="overflow-hidden">
+                    <div className="h-20 bg-linear-to-r from-cobalt-600 to-sky-500" aria-hidden="true" />
+                    <div className="px-6 pb-6">
+                        <div className="-mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                            <div className="flex items-end gap-4">
+                                <Avatar name={visitor.full_name} size="lg" />
+                                <div className="pb-1">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cobalt-600">Visitante</p>
+                                    <h1 className="text-2xl font-bold tracking-tight text-ink">{visitor.full_name}</h1>
+                                </div>
+                            </div>
+                            <ButtonLink href={`/visitantes/${visitor.id}/editar`} icon={Pencil}>
+                                Editar
+                            </ButtonLink>
+                        </div>
+
+                        <dl className="mt-8 grid gap-6 border-t border-slate-100 pt-6 sm:grid-cols-2">
+                            <DetailItem icon={IdCard} label="Identificación">
+                                <span className="font-mono">{visitor.identification_number}</span>
+                            </DetailItem>
+                            <DetailItem icon={Phone} label="Teléfono">
+                                {visitor.phone || <Badge tone="slate">No registrado</Badge>}
+                            </DetailItem>
+                            <DetailItem icon={CalendarDays} label="Fecha de registro">
+                                {formatDateTime(visitor.created_at)}
+                            </DetailItem>
+                            <DetailItem icon={RefreshCw} label="Última actualización">
+                                {formatDateTime(visitor.updated_at)}
+                            </DetailItem>
+                        </dl>
+                    </div>
+                </Card>
+            </div>
+        </AppLayout>
+    );
 }
-function Item({ label, value }) { return <div><dt className="font-semibold text-slate-500">{label}</dt><dd className="mt-1 text-slate-900">{value}</dd></div>; }

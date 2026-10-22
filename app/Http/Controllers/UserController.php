@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+/**
+ * Controlador de usuarios (plantilla de recurso).
+ *
+ * Pendiente de implementar: aún no tiene rutas registradas en `routes/web.php`.
+ * Ver docs/ROADMAP_BACKEND_PENDIENTE.md para el diseño del CRUD de usuarios y roles.
+ */
 class UserController extends Controller
 {
     /**
