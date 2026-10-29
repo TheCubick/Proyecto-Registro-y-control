@@ -21,7 +21,7 @@ export default function PageHeader({ title, eyebrow, description, icon, tone = '
                 <div>
                     {eyebrow && <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-cobalt-600">{eyebrow}</p>}
                     <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">{title}</h1>
-                    {description && <p className="mt-1.5 max-w-2xl text-sm leading-6 text-slate-500">{description}</p>}
+                    {description && <p className="mt-1.5 max-w-2xl text-sm leading-6 text-slate-600">{description}</p>}
                 </div>
             </div>
             {actions && <div className="flex flex-wrap gap-2">{actions}</div>}

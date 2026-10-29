@@ -2,23 +2,26 @@
  * Listado de visitas (`visits.index`).
  *
  * Muestra indicadores de la página actual (personas dentro, salidas, gafetes
- * pendientes) y la tabla de visitas con su estado.
+ * pendientes) y la bitácora con filas coloreadas según el estado de la visita.
  *
  * @param {Object} props
  * @param {Object} props.visits Paginador de Laravel; cada visita incluye `visitor`, `department` y `user`.
  */
 import { Head, useForm } from '@inertiajs/react';
-import { Building2, CircleCheck, ClipboardList, DoorOpen, Eye, LogIn, LogOut, MessageSquareText, Pencil, Plus, Settings2, Ticket, TicketX, Trash2, UserRound, Activity } from 'lucide-react';
+import { Activity, Building2, CircleCheck, ClipboardList, DoorOpen, Eye, LogIn, LogOut, MessageSquareText, Pencil, Plus, Settings2, Ticket, TicketX, Trash2, UserRound } from 'lucide-react';
+import { useState } from 'react';
 import Avatar from '../../Components/UI/Avatar';
 import Badge, { StatusBadge } from '../../Components/UI/Badge';
 import Button, { ButtonLink } from '../../Components/UI/Button';
 import Card, { CardHeader } from '../../Components/UI/Card';
 import EmptyState from '../../Components/UI/EmptyState';
+import { ConfirmDialog } from '../../Components/UI/Modal';
 import PageHeader from '../../Components/UI/PageHeader';
 import Pagination from '../../Components/UI/Pagination';
 import StatCard from '../../Components/UI/StatCard';
-import Table, { TableHead, Td, rowClass, tbodyClass } from '../../Components/UI/Table';
+import Table, { TableBody, TableHead, TableRow, Td } from '../../Components/UI/Table';
 import { formatDateTime } from '../../lib/format';
+import { visitStatus } from '../../lib/visitStatus';
 import AppLayout from '../../Layouts/AppLayout';
 
 const COLUMNS = [
@@ -33,22 +36,17 @@ const COLUMNS = [
 ];
 
 export default function Index({ visits }) {
-    const { delete: destroy } = useForm();
+    const { delete: destroy, processing } = useForm();
+    const [toDelete, setToDelete] = useState(null);
     const rows = visits.data ?? visits;
 
     const inside = rows.filter(visit => visit.status === 'dentro').length;
     const finished = rows.filter(visit => visit.status === 'completado').length;
     const withoutBadge = rows.filter(visit => visit.status === 'dentro' && !visit.badge_number).length;
 
-    /**
-     * Solicita confirmación y elimina la visita.
-     *
-     * @param {number} id
-     */
-    const remove = id => {
-        if (window.confirm('¿Eliminar esta visita?')) {
-            destroy(`/visitas/${id}`);
-        }
+    /** Elimina la visita seleccionada en el diálogo de confirmación. */
+    const confirmDelete = () => {
+        destroy(`/visitas/${toDelete.id}`, { preserveScroll: true, onFinish: () => setToDelete(null) });
     };
 
     return (
@@ -62,7 +60,7 @@ export default function Index({ visits }) {
                     icon={ClipboardList}
                     actions={
                         <ButtonLink href="/visitas/crear" icon={Plus}>
-                            Nueva visita
+                            Registrar visita
                         </ButtonLink>
                     }
                 />
@@ -78,26 +76,38 @@ export default function Index({ visits }) {
                     <CardHeader
                         title="Bitácora de visitas"
                         description="Ordenada de la entrada más reciente a la más antigua"
-                        actions={<Badge tone="cobalt">{visits.total ?? rows.length} visitas</Badge>}
+                        actions={
+                            <>
+                                <Badge tone="emerald" dot>
+                                    En edificio
+                                </Badge>
+                                <Badge tone="slate" dot>
+                                    Salida registrada
+                                </Badge>
+                                <Badge tone="rose" dot>
+                                    Cancelada
+                                </Badge>
+                            </>
+                        }
                     />
                     {rows.length ? (
                         <>
                             <Table className="min-w-260">
                                 <TableHead columns={COLUMNS} />
-                                <tbody className={tbodyClass}>
+                                <TableBody>
                                     {rows.map(visit => (
-                                        <tr key={visit.id} className={rowClass}>
+                                        <TableRow key={visit.id} tone={visitStatus(visit.status).tone}>
                                             <Td>
                                                 <div className="flex items-center gap-3">
                                                     <Avatar name={visit.visitor?.full_name} />
                                                     <div className="min-w-0">
                                                         <p className="font-semibold text-ink">{visit.visitor?.full_name}</p>
-                                                        <p className="font-mono text-xs text-slate-400">{visit.visitor?.identification_number}</p>
+                                                        <p className="font-mono text-xs text-slate-500">{visit.visitor?.identification_number}</p>
                                                     </div>
                                                 </div>
                                             </Td>
-                                            <Td className="text-slate-700">{visit.department?.name}</Td>
-                                            <Td className="max-w-50 truncate text-slate-600" title={visit.reason}>
+                                            <Td className="font-medium text-slate-700">{visit.department?.name}</Td>
+                                            <Td className="max-w-50 truncate text-slate-700" title={visit.reason}>
                                                 {visit.reason}
                                             </Td>
                                             <Td>
@@ -111,8 +121,8 @@ export default function Index({ visits }) {
                                                     </Badge>
                                                 )}
                                             </Td>
-                                            <Td className="whitespace-nowrap text-slate-600">{formatDateTime(visit.entry_time)}</Td>
-                                            <Td className="whitespace-nowrap text-slate-600">{formatDateTime(visit.exit_time)}</Td>
+                                            <Td className="whitespace-nowrap text-slate-700">{formatDateTime(visit.entry_time)}</Td>
+                                            <Td className="whitespace-nowrap text-slate-700">{formatDateTime(visit.exit_time)}</Td>
                                             <Td>
                                                 <StatusBadge status={visit.status} />
                                             </Td>
@@ -124,14 +134,14 @@ export default function Index({ visits }) {
                                                     <ButtonLink href={`/visitas/${visit.id}/editar`} variant="secondary" size="sm" icon={Pencil}>
                                                         Editar
                                                     </ButtonLink>
-                                                    <Button onClick={() => remove(visit.id)} variant="danger" size="sm" icon={Trash2}>
+                                                    <Button onClick={() => setToDelete(visit)} variant="danger" size="sm" icon={Trash2}>
                                                         Eliminar
                                                     </Button>
                                                 </div>
                                             </Td>
-                                        </tr>
+                                        </TableRow>
                                     ))}
-                                </tbody>
+                                </TableBody>
                             </Table>
                             <Pagination paginator={visits} noun="visitas" />
                         </>
@@ -149,6 +159,22 @@ export default function Index({ visits }) {
                     )}
                 </Card>
             </div>
+
+            <ConfirmDialog
+                open={Boolean(toDelete)}
+                onClose={() => setToDelete(null)}
+                onConfirm={confirmDelete}
+                processing={processing}
+                title="¿Eliminar esta visita?"
+                description={
+                    toDelete && (
+                        <>
+                            Se eliminará el registro de <strong className="font-semibold text-ink">{toDelete.visitor?.full_name}</strong>. Si fue un error de captura, considera cambiar su estado a
+                            “Cancelado” para conservar el historial.
+                        </>
+                    )
+                }
+            />
         </AppLayout>
     );
 }

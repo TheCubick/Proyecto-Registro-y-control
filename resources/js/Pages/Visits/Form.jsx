@@ -1,9 +1,10 @@
 /**
- * Formulario de alta y edición de visitas (`visits.create` / `visits.edit`).
+ * Alta y edición de visitas (`visits.create` / `visits.edit`).
  *
- * Agrupa los campos en tres secciones (quién y a dónde, detalle, horario y estado).
- * Envía `POST /visitas` o `PUT /visitas/{id}`; las reglas de validación viven en
- * `StoreVisitRequest` y `UpdateVisitRequest`.
+ * - Alta: Wizard guiado de 4 pasos (`Components/Visits/VisitWizard`) → `POST /visitas`.
+ * - Edición: formulario por secciones que incluye salida y estado → `PUT /visitas/{id}`.
+ *
+ * Las reglas de validación viven en `StoreVisitRequest` y `UpdateVisitRequest`.
  *
  * @param {Object} props
  * @param {Object} [props.visit] Visita a editar; si no existe, el formulario es de alta.
@@ -15,6 +16,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Activity, Building2, ClipboardList, LogIn, LogOut, MessageSquareText, Ticket, UserCheck, UserPlus, Users } from 'lucide-react';
 import FormField, { SelectInput, TextInput } from '../../Components/Forms/FormField';
 import FormShell, { FormActions, FormSection } from '../../Components/Forms/FormShell';
+import VisitWizard from '../../Components/Visits/VisitWizard';
 import { VISIT_STATUSES } from '../../lib/visitStatus';
 import AppLayout from '../../Layouts/AppLayout';
 
@@ -27,6 +29,24 @@ import AppLayout from '../../Layouts/AppLayout';
 const dateValue = value => (value ? value.slice(0, 16) : '');
 
 export default function Form({ visit, visitors, departments, users }) {
+    if (visit) {
+        return <EditVisitForm visit={visit} visitors={visitors} departments={departments} users={users} />;
+    }
+
+    return (
+        <AppLayout>
+            <Head title="Nueva visita" />
+            <VisitWizard visitors={visitors} departments={departments} users={users} />
+        </AppLayout>
+    );
+}
+
+/**
+ * Formulario de edición por secciones (visitante, detalle, horario y estado).
+ *
+ * @param {Object} props Mismas props que la página.
+ */
+function EditVisitForm({ visit, visitors, departments, users }) {
     const editing = Boolean(visit);
     const form = useForm({
         visitor_id: visit?.visitor_id ?? '',

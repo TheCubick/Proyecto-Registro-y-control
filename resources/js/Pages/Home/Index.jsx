@@ -6,12 +6,16 @@
  * No recibe props del backend.
  */
 import { Head, Link } from '@inertiajs/react';
+import { m } from 'framer-motion';
 import { ArrowRight, Building2, Car, ClipboardList, Construction, ConciergeBell, Plus, ShieldCheck, ShieldUser, UserCog, UserPlus, Users } from 'lucide-react';
 import Badge from '../../Components/UI/Badge';
 import { ButtonLink } from '../../Components/UI/Button';
 import Card from '../../Components/UI/Card';
 import IconTile from '../../Components/UI/IconTile';
+import { cardHover, staggerContainer, staggerItem } from '../../lib/motion';
 import AppLayout from '../../Layouts/AppLayout';
+
+const MotionLink = m.create(Link);
 
 const MODULES = [
     {
@@ -53,9 +57,9 @@ export default function Index() {
         <AppLayout>
             <Head title="Inicio" />
             <div className="space-y-8">
-                <section className="relative overflow-hidden rounded-[20px] bg-cobalt-600 px-6 py-8 text-white shadow-elevated sm:px-10 sm:py-10">
+                <m.section variants={staggerItem} className="relative overflow-hidden rounded-[20px] bg-linear-to-br from-cobalt-600 via-indigo-600 to-blue-700 px-6 py-8 text-white shadow-lg shadow-indigo-500/20 ring-1 ring-inset ring-white/10 sm:px-10 sm:py-10">
                     <div className="pointer-events-none absolute -right-16 -top-24 size-72 rounded-full bg-white/10 blur-3xl" aria-hidden="true" />
-                    <div className="pointer-events-none absolute -bottom-28 right-1/3 size-72 rounded-full bg-cobalt-400/40 blur-3xl" aria-hidden="true" />
+                    <div className="pointer-events-none absolute -bottom-28 right-1/3 size-72 rounded-full bg-sky-400/30 blur-3xl" aria-hidden="true" />
                     <div className="relative max-w-2xl">
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-cobalt-100">Sistema de Registro y Control de Accesos</p>
                         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Panel principal</h1>
@@ -71,33 +75,35 @@ export default function Index() {
                             </ButtonLink>
                         </div>
                     </div>
-                </section>
+                </m.section>
 
                 <section>
-                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Módulos</h2>
-                    <div className="grid gap-4 md:grid-cols-3">
+                    <h2 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-slate-600">Módulos</h2>
+                    <m.div variants={staggerContainer(0.08)} className="grid gap-4 md:grid-cols-3">
                         {MODULES.map(module => (
-                            <Link
+                            <MotionLink
                                 key={module.href}
                                 href={module.href}
-                                className="group flex flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-cobalt-200 hover:shadow-elevated focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cobalt-600/20"
+                                variants={staggerItem}
+                                {...cardHover}
+                                className="group flex flex-col rounded-2xl border border-slate-200/50 bg-white p-6 shadow-sm transition-[border-color,box-shadow] duration-200 hover:border-cobalt-200 hover:shadow-md hover:shadow-slate-900/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-cobalt-600/20"
                             >
                                 <IconTile icon={module.icon} tone={module.tone} />
-                                <h3 className="mt-4 font-semibold text-ink">{module.title}</h3>
-                                <p className="mt-1.5 flex-1 text-sm leading-6 text-slate-500">{module.text}</p>
+                                <h3 className="mt-4 text-base font-bold text-ink">{module.title}</h3>
+                                <p className="mt-1.5 flex-1 text-sm leading-6 text-slate-600">{module.text}</p>
                                 <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-cobalt-600">
                                     Abrir módulo
                                     <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                                 </span>
-                            </Link>
+                            </MotionLink>
                         ))}
-                    </div>
+                    </m.div>
                 </section>
 
                 <div className="grid gap-4 lg:grid-cols-5">
                     <Card className="p-6 lg:col-span-3">
                         <div className="flex items-center justify-between gap-3">
-                            <h2 className="font-semibold text-ink">Próximos módulos</h2>
+                            <h2 className="font-bold text-ink">Próximos módulos</h2>
                             <Badge tone="amber" icon={Construction}>
                                 En desarrollo
                             </Badge>
@@ -108,7 +114,7 @@ export default function Index() {
                                     <IconTile icon={item.icon} tone={item.tone} size="sm" />
                                     <div>
                                         <p className="text-sm font-semibold text-ink">{item.title}</p>
-                                        <p className="mt-0.5 text-sm text-slate-500">{item.text}</p>
+                                        <p className="mt-0.5 text-sm text-slate-600">{item.text}</p>
                                     </div>
                                 </li>
                             ))}
@@ -116,14 +122,14 @@ export default function Index() {
                     </Card>
 
                     <Card className="p-6 lg:col-span-2">
-                        <h2 className="font-semibold text-ink">Roles del sistema</h2>
+                        <h2 className="font-bold text-ink">Roles del sistema</h2>
                         <ul className="mt-5 space-y-4">
                             {ROLES.map(({ title, text, icon: Icon }) => (
                                 <li key={title} className="flex gap-3">
                                     <Icon className="mt-0.5 size-5 shrink-0 text-cobalt-600" aria-hidden="true" />
                                     <div>
                                         <p className="text-sm font-semibold text-ink">{title}</p>
-                                        <p className="mt-0.5 text-sm text-slate-500">{text}</p>
+                                        <p className="mt-0.5 text-sm text-slate-600">{text}</p>
                                     </div>
                                 </li>
                             ))}

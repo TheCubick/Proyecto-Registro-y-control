@@ -6,14 +6,16 @@
  */
 import { Head, useForm } from '@inertiajs/react';
 import { CalendarDays, Eye, IdCard, Pencil, Phone, Settings2, Trash2, UserPlus, UserRound, Users } from 'lucide-react';
+import { useState } from 'react';
 import Avatar from '../../Components/UI/Avatar';
 import Badge from '../../Components/UI/Badge';
 import Button, { ButtonLink } from '../../Components/UI/Button';
 import Card, { CardHeader } from '../../Components/UI/Card';
 import EmptyState from '../../Components/UI/EmptyState';
+import { ConfirmDialog } from '../../Components/UI/Modal';
 import PageHeader from '../../Components/UI/PageHeader';
 import Pagination from '../../Components/UI/Pagination';
-import Table, { TableHead, Td, rowClass, tbodyClass } from '../../Components/UI/Table';
+import Table, { TableBody, TableHead, TableRow, Td } from '../../Components/UI/Table';
 import { formatDate } from '../../lib/format';
 import AppLayout from '../../Layouts/AppLayout';
 
@@ -26,18 +28,13 @@ const COLUMNS = [
 ];
 
 export default function Index({ visitors }) {
-    const { delete: destroy } = useForm();
+    const { delete: destroy, processing } = useForm();
+    const [toDelete, setToDelete] = useState(null);
     const rows = visitors.data ?? visitors;
 
-    /**
-     * Solicita confirmación y elimina al visitante.
-     *
-     * @param {number} id
-     */
-    const remove = id => {
-        if (window.confirm('¿Eliminar este visitante? Se eliminarán también sus visitas.')) {
-            destroy(`/visitantes/${id}`);
-        }
+    /** Elimina al visitante seleccionado en el diálogo de confirmación. */
+    const confirmDelete = () => {
+        destroy(`/visitantes/${toDelete.id}`, { preserveScroll: true, onFinish: () => setToDelete(null) });
     };
 
     return (
@@ -67,9 +64,9 @@ export default function Index({ visitors }) {
                         <>
                             <Table className="min-w-190">
                                 <TableHead columns={COLUMNS} />
-                                <tbody className={tbodyClass}>
+                                <TableBody>
                                     {rows.map(visitor => (
-                                        <tr key={visitor.id} className={rowClass}>
+                                        <TableRow key={visitor.id}>
                                             <Td>
                                                 <div className="flex items-center gap-3">
                                                     <Avatar name={visitor.full_name} />
@@ -77,12 +74,10 @@ export default function Index({ visitors }) {
                                                 </div>
                                             </Td>
                                             <Td>
-                                                <span className="rounded-md bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">{visitor.identification_number}</span>
+                                                <span className="rounded-md bg-slate-100 px-2 py-1 font-mono text-xs font-medium text-slate-700">{visitor.identification_number}</span>
                                             </Td>
-                                            <Td className="text-slate-600">
-                                                {visitor.phone || <Badge tone="slate">No registrado</Badge>}
-                                            </Td>
-                                            <Td className="text-slate-500">{formatDate(visitor.created_at)}</Td>
+                                            <Td className="text-slate-700">{visitor.phone || <Badge tone="slate">No registrado</Badge>}</Td>
+                                            <Td className="text-slate-600">{formatDate(visitor.created_at)}</Td>
                                             <Td align="right">
                                                 <div className="flex justify-end gap-2">
                                                     <ButtonLink href={`/visitantes/${visitor.id}`} variant="ghost" size="sm" icon={Eye}>
@@ -91,14 +86,14 @@ export default function Index({ visitors }) {
                                                     <ButtonLink href={`/visitantes/${visitor.id}/editar`} variant="secondary" size="sm" icon={Pencil}>
                                                         Editar
                                                     </ButtonLink>
-                                                    <Button onClick={() => remove(visitor.id)} variant="danger" size="sm" icon={Trash2}>
+                                                    <Button onClick={() => setToDelete(visitor)} variant="danger" size="sm" icon={Trash2}>
                                                         Eliminar
                                                     </Button>
                                                 </div>
                                             </Td>
-                                        </tr>
+                                        </TableRow>
                                     ))}
-                                </tbody>
+                                </TableBody>
                             </Table>
                             <Pagination paginator={visitors} noun="visitantes" />
                         </>
@@ -109,13 +104,22 @@ export default function Index({ visitors }) {
                             description="Registra a la primera persona para poder crear visitas a su nombre."
                             action={
                                 <ButtonLink href="/visitantes/crear" icon={UserPlus}>
-                                    Nuevo visitante
+                                    Crear visitante
                                 </ButtonLink>
                             }
                         />
                     )}
                 </Card>
             </div>
+
+            <ConfirmDialog
+                open={Boolean(toDelete)}
+                onClose={() => setToDelete(null)}
+                onConfirm={confirmDelete}
+                processing={processing}
+                title={`¿Eliminar a ${toDelete?.full_name}?`}
+                description="También se eliminarán todas sus visitas registradas. Esta acción no se puede deshacer."
+            />
         </AppLayout>
     );
 }
